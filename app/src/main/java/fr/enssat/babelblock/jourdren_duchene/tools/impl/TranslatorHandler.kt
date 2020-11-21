@@ -5,34 +5,33 @@ import android.util.Log
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
-import fr.enssat.babelblock.jourdren_duchene.tools.TranslationTool
+import fr.enssat.babelblock.jourdren_duchene.tools.ServiceDemo
 import java.util.Locale
 
-class TranslatorHandler(context: Context, from: Locale, to: Locale): TranslationTool {
+class TranslatorHandler(context: Context, from: Locale, to: Locale, downloadModelSuccess: () -> Unit = {}, downloadModelFailed: () -> Unit = {}): ServiceDemo(context) {
 
-    private val options = TranslatorOptions.Builder()
-        .setSourceLanguage(from.language)
-        .setTargetLanguage(to.language)
-        .build()
+    private val options = TranslatorOptions.Builder().setSourceLanguage(from.language).setTargetLanguage(to.language).build()
 
     private val translator = Translation.getClient(options)
 
-    private val conditions = DownloadConditions.Builder()
-        .requireWifi()
-        .build()
+    private val conditions = DownloadConditions.Builder().requireWifi().build()
 
-    init {  translator.downloadModelIfNeeded(conditions)
-        .addOnSuccessListener { Log.d("Translation", "download completed") }
-        .addOnFailureListener { e -> Log.e("Translation", "Download failed ", e) }
+    init {
+        translator.downloadModelIfNeeded(conditions)
+                .addOnSuccessListener {
+                    Log.d("Translation", "download completed")
+                    downloadModelSuccess
+                }.addOnFailureListener {
+                    e -> Log.e("Translation", "Download failed ", e)
+                    downloadModelFailed
+                }
     }
 
-    override fun translate(text: String, callback: (String) -> Unit) {
-        translator.translate(text)
-            .addOnSuccessListener(callback)
-            .addOnFailureListener { e -> Log.e("Translation", "Translation falied", e) }
+    fun run(text: String, callback: (String) -> Unit) {
+        this.translator.translate(text).addOnSuccessListener(callback).addOnFailureListener { e -> Log.e("Translation", "Translation falied", e) }
     }
 
     override fun close() {
-        translator.close()
+        this.translator.close()
     }
 }

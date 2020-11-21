@@ -2,31 +2,38 @@ package fr.enssat.babelblock.jourdren_duchene
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import fr.enssat.babelblock.jourdren_duchene.tools.BlockService
-import fr.enssat.babelblock.jourdren_duchene.tools.TranslationTool
+import android.util.Log
+import android.widget.Button
+import fr.enssat.babelblock.jourdren_duchene.tools.impl.TranslatorHandler
 import kotlinx.android.synthetic.main.activity_translator.*
 import java.util.*
 
-class TranslatorActivity : AppCompatActivity() {
+class TranslatorActivity : BaseActivity() {
 
-    lateinit var translator: TranslationTool
+    lateinit var translator: TranslatorHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_translator)
 
-        val service = BlockService(this)
-        translator = service.translator(Locale.FRENCH, Locale.ENGLISH)
+        this.translator = TranslatorHandler(this, Locale.FRENCH, Locale.ENGLISH, {
+            translate_button.isEnabled = true;
+            translate_button.isEnabled = true;
+        }, {
+            translate_button.isEnabled = false;
+            translate_button.isEnabled = false;
+            translated_text.text = "App can't download the translation model, please check your wifi connection..."
+        })
 
         translate_button.setOnClickListener {
-            translator.translate(edit_query.text.toString()) { enText ->
+            this.translator.run(edit_query.text.toString()) { enText ->
                 translated_text.text = enText
             }
         }
     }
 
     override fun onDestroy() {
-        translator.close()
+        this.translator.close()
         super.onDestroy()
     }
 }
