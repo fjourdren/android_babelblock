@@ -2,35 +2,37 @@ package fr.enssat.babelblock.jourdren_duchene
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import fr.enssat.babelblock.jourdren_duchene.tools.BlockService
-import fr.enssat.babelblock.jourdren_duchene.tools.TextToSpeechTool
+import fr.enssat.babelblock.jourdren_duchene.tools.ServiceDemo
+import fr.enssat.babelblock.jourdren_duchene.tools.impl.TextToSpeechHandler
 
 import kotlinx.android.synthetic.main.activity_text_to_speech.*
+import java.util.*
 
 
-class TextToSpeechActivity : AppCompatActivity() {
+class TextToSpeechActivity : BaseActivity() {
 
-    lateinit var speaker: TextToSpeechTool
+    lateinit var service: ServiceDemo;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_text_to_speech)
 
-        val service = BlockService(this)
-        speaker = service.textToSpeech()
+        setContentView(R.layout.activity_text_to_speech)
 
         //cf build.gradle kotlin-android-extensions
         //cf import kotlinx.android.synthetic.main.activity_text_to_speech.*
         //say goodbye to findviewbyid, recovering and binding view from layout
 
+        this.service = TextToSpeechHandler(this.applicationContext, Locale.getDefault())
+
         play_button.setOnClickListener {
-            val text = edit_query.text.toString()
-            speaker.speak(text)
+            val text: String = edit_query.text.toString()
+            (this.service as TextToSpeechHandler).input = text
+            this.service.run()
         }
     }
 
     override fun onDestroy() {
-        speaker.close()
+        this.service.close()
         super.onDestroy()
     }
 }

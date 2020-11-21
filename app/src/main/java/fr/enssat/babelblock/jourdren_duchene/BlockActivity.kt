@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_tool_chain.*
 
 
-class BlockActivity : AppCompatActivity() {
+class BlockActivity : BaseActivity() {
 
     val maxsize:Int = 5
     val handler = Handler(Looper.getMainLooper())
