@@ -1,30 +1,27 @@
-package fr.enssat.babelblock.jourdren_duchene.tools.impl
+package fr.enssat.babelblock.jourdren_duchene.services.tts
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.util.Log
-import fr.enssat.babelblock.jourdren_duchene.TextToSpeechActivity
-import fr.enssat.babelblock.jourdren_duchene.tools.ServiceDemo
+import fr.enssat.babelblock.jourdren_duchene.services.Service
 import java.util.*
 
-class TextToSpeechHandler: ServiceDemo {
+class TextToSpeechService: Service {
     var locale: Locale
-    var speaker : TextToSpeech
+    var speaker: TextToSpeech
 
     constructor(context: Context, locale: Locale): super(context) {
         this.locale = locale
 
-        speaker = TextToSpeech(context, object : TextToSpeech.OnInitListener {
-            override fun onInit(status: Int) {
-                Log.d("Speak", "status: $status")
-            }
-        })
+        // init android's text to speech service
+        speaker = TextToSpeech(context) { status -> Log.d("TextToSpeechService", "Status: $status") }
     }
 
-
-
     override fun run() {
+        // set speaker's language
         speaker.language = locale
+
+        // run the synthesizer
         speaker.speak(super.input, TextToSpeech.QUEUE_FLUSH, null)
     }
 

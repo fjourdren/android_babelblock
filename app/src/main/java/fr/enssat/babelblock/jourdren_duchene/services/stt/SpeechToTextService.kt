@@ -1,4 +1,4 @@
-package fr.enssat.babelblock.jourdren_duchene.tools.impl
+package fr.enssat.babelblock.jourdren_duchene.services.stt
 
 import android.content.Context
 import android.content.Intent
@@ -7,53 +7,52 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
-import fr.enssat.babelblock.jourdren_duchene.tools.ServiceDemo
-import fr.enssat.babelblock.jourdren_duchene.tools.SpeechToTextTool
+import fr.enssat.babelblock.jourdren_duchene.services.Service
 import java.lang.IllegalStateException
 import java.util.*
 
-class SpeechRecognizerHandler: ServiceDemo {
+class SpeechToTextService: Service {
     var locale: Locale
 
     private var speechRecognizer: SpeechRecognizer
-    private var listener: SpeechToTextTool.Listener
+    private var listener: Listener
     private var intent: Intent
 
-    constructor(context: Context, locale: Locale, listener: SpeechToTextTool.Listener): super(context) {
+    constructor(context: Context, locale: Locale, listener: Listener): super(context) {
         this.locale = locale
         this.listener = listener
 
         if(SpeechRecognizer.isRecognitionAvailable(context).not()) {
-            Log.e("Reco", "Sorry but Speech recognizer is not available on this device")
+            Log.e("SpeechToTextService", "Sorry but Speech recognizer is not available on this device")
             throw IllegalStateException()
         }
 
         this.speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context).apply {
             setRecognitionListener(object: RecognitionListener {
-                override fun onReadyForSpeech(params: Bundle?) { Log.d("Reco", "ready $params") }
+                override fun onReadyForSpeech(params: Bundle?) { Log.d("SpeechToTextService", "ready $params") }
                 override fun onRmsChanged(rmsdB: Float) { }
                 override fun onBufferReceived(buffer: ByteArray?) { }
                 override fun onEndOfSpeech() { }
-                override fun onError(error: Int) { Log.d("Reco", "Error : $error") }
+                override fun onError(error: Int) { Log.d("SpeechToTextService", "Error : $error") }
 
                 override fun onBeginningOfSpeech() {
-                    Log.d("Reco", "Listening")
+                    Log.d("SpeechToTextService", "Listening")
                     listener?.onResult("Listening...", false)
                 }
 
                 private fun Bundle.getResult(): String? = this.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.get(0)
                 override fun onPartialResults(partialResults: Bundle?) {
-                    Log.d("Reco", "partial : $partialResults")
+                    Log.d("SpeechToTextService", "partial : $partialResults")
                     partialResults?.getResult()?.apply {
-                        Log.d("Reco", "partial : $this")
+                        Log.d("SpeechToTextService", "partial : $this")
                         listener?.onResult(this, false)
                     }
                 }
 
                 override fun onResults(results: Bundle?) {
-                    Log.d("Reco", "result : $results")
+                    Log.d("SpeechToTextService", "result : $results")
                     results?.getResult()?.apply {
-                        Log.d("Reco", "result : $this")
+                        Log.d("SpeechToTextService", "result : $this")
                         listener?.onResult(this, true)
                     }
                 }
