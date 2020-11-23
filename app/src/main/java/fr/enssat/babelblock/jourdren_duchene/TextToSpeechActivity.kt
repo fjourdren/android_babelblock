@@ -1,32 +1,31 @@
 package fr.enssat.babelblock.jourdren_duchene
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import fr.enssat.babelblock.jourdren_duchene.tools.ServiceDemo
-import fr.enssat.babelblock.jourdren_duchene.tools.impl.TextToSpeechHandler
+import fr.enssat.babelblock.jourdren_duchene.services.Service
+import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
 
 import kotlinx.android.synthetic.main.activity_text_to_speech.*
 import java.util.*
 
 
+// inherit BaseActivity to manage menuInflater
 class TextToSpeechActivity : BaseActivity() {
 
-    lateinit var service: ServiceDemo;
+    lateinit var service: TextToSpeechService;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // set activity's layout
         setContentView(R.layout.activity_text_to_speech)
 
-        //cf build.gradle kotlin-android-extensions
-        //cf import kotlinx.android.synthetic.main.activity_text_to_speech.*
-        //say goodbye to findviewbyid, recovering and binding view from layout
+        // init text to speech service
+        this.service = TextToSpeechService(this.applicationContext, Locale.getDefault())
 
-        this.service = TextToSpeechHandler(this.applicationContext, Locale.getDefault())
-
+        // voice synthesizer button listener
         play_button.setOnClickListener {
             val text: String = edit_query.text.toString()
-            (this.service as TextToSpeechHandler).input = text
+            this.service.input = text // send text to the service
             this.service.run()
         }
     }

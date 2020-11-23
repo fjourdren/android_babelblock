@@ -1,22 +1,23 @@
 package fr.enssat.babelblock.jourdren_duchene
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import fr.enssat.babelblock.jourdren_duchene.tools.impl.TranslatorHandler
+import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import kotlinx.android.synthetic.main.activity_translator.*
 import java.util.*
 
+// inherit BaseActivity to manage menuInflater
 class TranslatorActivity : BaseActivity() {
 
-    lateinit var translator: TranslatorHandler
+    lateinit var translator: TranslatorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // set activity's layout
         setContentView(R.layout.activity_translator)
 
-        this.translator = TranslatorHandler(this, Locale.FRENCH, Locale.ENGLISH, {
+        // create translation service
+        this.translator = TranslatorService(this, Locale.FRENCH, Locale.ENGLISH, {
             translate_button.isEnabled = true;
             translate_button.isEnabled = true;
         }, {
@@ -25,6 +26,7 @@ class TranslatorActivity : BaseActivity() {
             translated_text.text = "App can't download the translation model, please check your wifi connection..."
         })
 
+        // translate button listener
         translate_button.setOnClickListener {
             this.translator.run(edit_query.text.toString()) { enText ->
                 translated_text.text = enText

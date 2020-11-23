@@ -1,8 +1,8 @@
-package fr.enssat.babelblock.jourdren_duchene.tools
+package fr.enssat.babelblock.jourdren_duchene.services
 
 import android.content.Context
 
-abstract class ServiceDemo(context: Context) {
+abstract class Service(context: Context) {
     lateinit var context: Context;
 
     lateinit var input: String;
