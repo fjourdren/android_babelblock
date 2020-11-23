@@ -6,10 +6,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_tool_chain.*
 
-
+// inherit BaseActivity to manage menuInflater
 class BlockActivity : BaseActivity() {
 
     val maxsize:Int = 5
