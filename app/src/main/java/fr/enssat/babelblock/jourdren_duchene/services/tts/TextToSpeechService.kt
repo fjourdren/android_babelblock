@@ -14,22 +14,22 @@ class TextToSpeechService: Service {
         this.locale = locale
 
         // init android's text to speech service
-        speaker = TextToSpeech(context) { status -> Log.d("TextToSpeechService", "Status: $status") }
+        this.speaker = TextToSpeech(context) { status -> Log.d("TextToSpeechService", "Status: $status") }
     }
 
     override fun run() {
         // set speaker's language
-        speaker.language = locale
+        this.speaker.language = locale
 
         // run the synthesizer
-        speaker.speak(super.input, TextToSpeech.QUEUE_FLUSH, null)
+        this.speaker.speak(super.input, TextToSpeech.QUEUE_FLUSH, null)
     }
 
     override fun stop() {
-        speaker.stop()
+        this.speaker.stop()
     }
 
     override fun close() {
-        speaker.shutdown()
+        this.speaker.shutdown()
     }
 }
