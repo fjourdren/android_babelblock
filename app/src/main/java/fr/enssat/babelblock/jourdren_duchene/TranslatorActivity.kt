@@ -78,11 +78,14 @@ class TranslatorActivity: BaseActivity(), AdapterView.OnItemSelectedListener {
 package fr.enssat.babelblock.jourdren_duchene
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import com.google.mlkit.nl.translate.TranslateLanguage
+import fr.enssat.babelblock.jourdren_duchene.services.translation.Language
 import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.translation.languages
 import kotlinx.android.synthetic.main.activity_translator.*
@@ -90,7 +93,7 @@ import kotlinx.android.synthetic.main.activity_translator.*
 // inherit BaseActivity to manage menuInflater
 class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
-    lateinit var translator: TranslatorService
+    lateinit var translatorService: TranslatorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,32 +130,33 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
         /* === SERVICES INIT === */
         // create translation service
-        this.translator = TranslatorService(this, languages.get("french").toString(), TranslateLanguage.ENGLISH, {
-            translate_button.isEnabled = true;
-            translate_button.isEnabled = true;
-        }, {
-            translate_button.isEnabled = false;
-            translate_button.isEnabled = false;
-            translated_text.text = "App can't download the translation model, please check your wifi connection..."
-        })
+        this.translatorService = TranslatorService(this, languages.get("french").toString(), languages.get("english").toString())
 
 
         /* === BUTTON LISTENERS === */
         translate_button.setOnClickListener {
-            this.translator.run(edit_query.text.toString()) { enText ->
+            this.translatorService.run(edit_query.text.toString()) { enText ->
                 translated_text.text = enText
             }
         }
 
-        // from language spinner listeners
+        // language spinner listeners
+        from_language_spinner.setOnItemSelectedListener(this);
         to_language_spinner.setOnItemSelectedListener(this);
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
         when(parent.id) {
             R.id.from_language_spinner -> {
-                var to_lang_txt = parent.getItemAtPosition(pos).toString();
-                this.translator = TranslatorService(this, languages.get(to_lang_txt).toString(), languages.get("english").toString(), {
+                var from_language = parent.getItemAtPosition(pos).toString();
+                this.translatorService.from_language = languages.get(from_language).toString()
+
+                Log.d("debug", "from: " + this.translatorService.from_language)
+
+                translate_button.isEnabled = false;
+                translate_button.isEnabled = false;
+                Toast.makeText(this, "Getting translation model...", Toast.LENGTH_SHORT).show()
+                this.translatorService.downloadModelIfNeeded({
                     translate_button.isEnabled = true;
                     translate_button.isEnabled = true;
                 }, {
@@ -161,9 +165,17 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                     translated_text.text = "App can't download the translation model, please check your wifi connection..."
                 })
             }
+
             R.id.to_language_spinner -> {
-                var from_lang_txt = parent.getItemAtPosition(pos).toString();
-                this.translator = TranslatorService(this, languages.get("french").toString(), languages.get(from_lang_txt).toString(), {
+                var to_language = parent.getItemAtPosition(pos).toString();
+                this.translatorService.to_language = languages.get(to_language).toString()
+
+                Log.d("debug", "to: " + this.translatorService.to_language)
+
+                translate_button.isEnabled = false;
+                translate_button.isEnabled = false;
+                Toast.makeText(this, "Getting translation model...", Toast.LENGTH_SHORT).show()
+                this.translatorService.downloadModelIfNeeded({
                     translate_button.isEnabled = true;
                     translate_button.isEnabled = true;
                 }, {
@@ -176,11 +188,11 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onDestroy() {
-        this.translator.close()
+        this.translatorService.close()
         super.onDestroy()
     }
 }

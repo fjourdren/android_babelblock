@@ -77,21 +77,45 @@ import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import fr.enssat.babelblock.jourdren_duchene.services.Service
 
-class TranslatorService(context: Context, from: String, to: String, downloadModelSuccess: () -> Unit = {}, downloadModelFailed: () -> Unit = {}): Service(context) {
+class TranslatorService: Service {
 
-    private val downloadConditions = DownloadConditions.Builder().requireWifi().build() // make a condition object which describe condition needed to start downloading a model
-    private val translatorOptions = TranslatorOptions.Builder().setSourceLanguage(from).setTargetLanguage(to).build() // configure languages
-    private val translator = Translation.getClient(translatorOptions)
+    var from_language: String = "french"
+    var to_language: String = "english"
+
+    private var translatorOptions = TranslatorOptions.Builder().setSourceLanguage(from_language).setTargetLanguage(to_language).build() // configure languages
+    private var translator = Translation.getClient(translatorOptions)
+
+    constructor(context: Context, from_language: String, to_language: String): super(context) {
+        this.from_language = from_language
+        this.to_language = to_language
+
+        downloadModelIfNeeded()
+    }
 
     init {
+        //this.downloadModelIfNeeded()
+    }
+
+    fun buildObject() {
+        this.translatorOptions = TranslatorOptions.Builder().setSourceLanguage(this.from_language).setTargetLanguage(this.to_language).build() // configure languages
+        this.translator = Translation.getClient(this.translatorOptions)
+    }
+
+    fun downloadModelIfNeeded(downloadModelSuccess: () -> Unit = {}, downloadModelFailed: () -> Unit = {}) {
+        // build translator
+        this.buildObject()
+
+        // make a condition object which describe condition needed to start downloading a model
+        val downloadConditions = DownloadConditions.Builder().requireWifi().build()
+
         // apply the download condition => download if the model isn't on the device and that device is connected in wifi
-        translator.downloadModelIfNeeded(downloadConditions)
+        this.translator.downloadModelIfNeeded(downloadConditions)
                 .addOnSuccessListener {
                     Log.d("TranslatorService", "Translation model download completed")
-                    downloadModelSuccess // callback success execution
+                    downloadModelSuccess.invoke() // callback success execution
                 }.addOnFailureListener {
                     e -> Log.e("TranslatorService", "Translation model download failed ", e)
-                    downloadModelFailed // callback failure execution
+                    downloadModelFailed.invoke() // callback failure execution
                 }
     }
 
