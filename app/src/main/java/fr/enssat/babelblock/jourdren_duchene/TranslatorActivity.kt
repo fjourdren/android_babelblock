@@ -78,14 +78,10 @@ class TranslatorActivity: BaseActivity(), AdapterView.OnItemSelectedListener {
 package fr.enssat.babelblock.jourdren_duchene
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
-import com.google.mlkit.nl.translate.TranslateLanguage
-import fr.enssat.babelblock.jourdren_duchene.services.translation.Language
 import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.translation.languages
 import kotlinx.android.synthetic.main.activity_translator.*
@@ -110,11 +106,18 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
 
 
+        // generate default language spinners values
+        val default_from_language_string = "french"
+        val default_to_language_string   = "english"
+
+
+
         // populate from_language_spinner
         val from_language_spinner = findViewById<Spinner>(R.id.from_language_spinner)
         from_language_spinner.adapter = adapter
-        // set default langage
-        val default_from_language_spinner: Int = adapter.getPosition("french")
+
+        // set default from_language_spinner
+        val default_from_language_spinner: Int = adapter.getPosition(default_from_language_string)
         from_language_spinner.setSelection(default_from_language_spinner)
 
 
@@ -122,15 +125,16 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         // populate to_language_spinner
         val to_language_spinner = findViewById<Spinner>(R.id.to_language_spinner)
         to_language_spinner.adapter = adapter
-        // set default langage
-        val default_to_language_spinner: Int = adapter.getPosition("english")
+
+        // set default to_language_spinner
+        val default_to_language_spinner: Int = adapter.getPosition(default_to_language_string)
         to_language_spinner.setSelection(default_to_language_spinner)
 
 
 
         /* === SERVICES INIT === */
         // create translation service
-        this.translatorService = TranslatorService(this, languages.get("french").toString(), languages.get("english").toString())
+        this.translatorService = TranslatorService(this, languages.get(default_from_language_string).toString(),  languages.get(default_to_language_string).toString())
 
 
         /* === BUTTON LISTENERS === */
@@ -151,18 +155,17 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                 var from_language = parent.getItemAtPosition(pos).toString();
                 this.translatorService.from_language = languages.get(from_language).toString()
 
-                Log.d("debug", "from: " + this.translatorService.from_language)
-
                 translate_button.isEnabled = false;
                 translate_button.isEnabled = false;
-                Toast.makeText(this, "Getting translation model...", Toast.LENGTH_SHORT).show()
+                info_message.text = "State: Downloading translation model... Please wait."
                 this.translatorService.downloadModelIfNeeded({
                     translate_button.isEnabled = true;
                     translate_button.isEnabled = true;
+                    info_message.text = "State: Ready."
                 }, {
                     translate_button.isEnabled = false;
                     translate_button.isEnabled = false;
-                    translated_text.text = "App can't download the translation model, please check your wifi connection..."
+                    info_message.text = "Error: App can't download the translation model, please check your wifi connection or used languages..."
                 })
             }
 
@@ -170,18 +173,17 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                 var to_language = parent.getItemAtPosition(pos).toString();
                 this.translatorService.to_language = languages.get(to_language).toString()
 
-                Log.d("debug", "to: " + this.translatorService.to_language)
-
                 translate_button.isEnabled = false;
                 translate_button.isEnabled = false;
-                Toast.makeText(this, "Getting translation model...", Toast.LENGTH_SHORT).show()
+                info_message.text = "Downloading translation model... Please wait."
                 this.translatorService.downloadModelIfNeeded({
                     translate_button.isEnabled = true;
                     translate_button.isEnabled = true;
+                    info_message.text = "State: Ready."
                 }, {
                     translate_button.isEnabled = false;
                     translate_button.isEnabled = false;
-                    translated_text.text = "App can't download the translation model, please check your wifi connection..."
+                    info_message.text = "Error: App can't download the translation model, please check your wifi connection or used languages..."
                 })
             }
         }
