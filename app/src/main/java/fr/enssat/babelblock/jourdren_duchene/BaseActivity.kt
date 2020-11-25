@@ -3,6 +3,8 @@ package fr.enssat.babelblock.jourdren_duchene
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 

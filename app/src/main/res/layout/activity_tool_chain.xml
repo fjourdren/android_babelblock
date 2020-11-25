@@ -29,6 +29,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@android:layout/simple_list_item_1"/>
 
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

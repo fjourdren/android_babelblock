@@ -57,7 +57,7 @@ class SpeechToTextService: Service {
                     }
                 }
 
-                override fun onEvent(eventType: Int, params: Bundle?) { }
+                override fun onEvent(eventType: Int, params: Bundle?) {}
             })
         }
 
@@ -68,15 +68,15 @@ class SpeechToTextService: Service {
     }
 
     override fun run() {
-        speechRecognizer.startListening(this.intent)
+        this.speechRecognizer.startListening(this.intent)
     }
 
     override fun stop() {
-        speechRecognizer.stopListening()
-        speechRecognizer.cancel()
+        this.speechRecognizer.stopListening()
+        this.speechRecognizer.cancel()
     }
 
     override fun close() {
-        speechRecognizer.destroy()
+        this.speechRecognizer.destroy()
     }
 }
