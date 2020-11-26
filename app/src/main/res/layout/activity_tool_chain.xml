@@ -23,10 +23,10 @@
         android:id="@+id/tool_list"
         android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:background="#888"
+        android:background="@color/purple_500"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@android:layout/simple_list_item_1"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/simple_text_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
