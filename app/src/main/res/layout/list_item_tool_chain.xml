@@ -50,11 +50,12 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="20dp"
-        android:layout_height="18dp"
-        app:layout_constraintEnd_toEndOf="@+id/params"
+        android:layout_width="9dp"
+        android:layout_height="12dp"
+        android:tint="#689F38"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/_200px_move_icon" />
+        app:srcCompat="@drawable/hand" />
 
     <TextView
         android:id="@+id/tool_title"
