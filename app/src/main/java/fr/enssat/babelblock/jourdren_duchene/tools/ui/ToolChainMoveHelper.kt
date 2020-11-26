@@ -2,9 +2,11 @@ package fr.enssat.babelblock.jourdren_duchene.tools.ui
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import fr.enssat.babelblock.jourdren_duchene.BlockActivity
 
 interface ItemMoveAdapter {
     fun onRowMoved(from: Int, to: Int)
+    fun onRowDeleted(target: Int)
     fun onRowSelected(viewHolder: RecyclerView.ViewHolder)
     fun onRowReleased(viewHolder: RecyclerView.ViewHolder)
 }
@@ -29,7 +31,9 @@ private class ItemMoveCallback(private val adapter: ItemMoveAdapter) : ItemTouch
         return true
     }
 
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) { }
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        adapter.onRowDeleted(viewHolder.adapterPosition)
+    }
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {

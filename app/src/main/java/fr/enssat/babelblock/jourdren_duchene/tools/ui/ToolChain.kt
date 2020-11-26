@@ -38,6 +38,11 @@ class ToolChain(list: List<ToolDisplay> = emptyList()) {
         list.add(to, draged)
     }
 
+    // delete tool
+    fun remove(from: Int) {
+        list.removeAt(from)
+    }
+
     //display each input/output of this chain
     //starting at the given position
     //with an initial empty input
