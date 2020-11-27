@@ -34,6 +34,7 @@ class ToolChainAdapter(val context: Context, val toolChain: ToolChain) : Recycle
 
     override fun onRowDeleted(target: Int) {
         toolChain.remove(target)
+        notifyDataSetChanged()
     }
 
     override fun onRowSelected(viewHolder: RecyclerView.ViewHolder) {
@@ -42,7 +43,6 @@ class ToolChainAdapter(val context: Context, val toolChain: ToolChain) : Recycle
 
     override fun onRowReleased(viewHolder: RecyclerView.ViewHolder) {
         viewHolder.itemView.setBackgroundColor(this.context.resources.getColor(R.color.block_color))
-        notifyDataSetChanged()
     }
 
     // viewholder, kind of reusable view cache, for each tool in the chain
