@@ -19,8 +19,8 @@ class ToolChain(list: List<ToolDisplay> = emptyList()) {
         get() = list.size
 
     private var onChangeListener: (() -> Unit)? = null
-    //callback to invoke void method on toolchain Changes
-    //see init of ToolChainAdapter
+
+    // callback to invoke void method on toolchain Changes (see init of ToolChainAdapter)
     fun setOnChangeListener(callback: () -> Unit) {
         onChangeListener = callback
     }
@@ -32,7 +32,7 @@ class ToolChain(list: List<ToolDisplay> = emptyList()) {
 
     fun get(index: Int) = list.get(index)
 
-    //remove and insert
+    // remove and insert
     fun move(from: Int, to: Int) {
         val draged = list.removeAt(from)
         list.add(to, draged)
@@ -43,14 +43,11 @@ class ToolChain(list: List<ToolDisplay> = emptyList()) {
         list.removeAt(from)
     }
 
-    //display each input/output of this chain
-    //starting at the given position
-    //with an initial empty input
+    // display each input/output of this chain starting at the given position with an initial empty input
     fun display(position: Int, input: String = "") {
         //recursive loop
         fun loop(value: String, chain: List<ToolDisplay>) {
-            //if not null do the let statement
-            //test end of recursion
+            // if not null do the let statement test end of recursion
             chain.firstOrNull()?.let {
                 it.input = value
                 onChangeListener?.invoke()
@@ -64,7 +61,8 @@ class ToolChain(list: List<ToolDisplay> = emptyList()) {
                 }
             }
         }
-        //start recursion
+
+        // start recursion
         loop(input, list.drop(position))
     }
 }
