@@ -85,6 +85,7 @@ import android.widget.Spinner
 import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.translation.languages
 import kotlinx.android.synthetic.main.activity_translator.*
+import kotlinx.android.synthetic.main.list_item_tool_chain.*
 
 // inherit BaseActivity to manage menuInflater
 class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
@@ -152,9 +153,14 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
         when(parent.id) {
             R.id.from_language_spinner -> {
-                var from_language = parent.getItemAtPosition(pos).toString();
-                this.translatorService.from_language = languages.get(from_language).toString()
+                // get language
+                var fromLanguageItemSelected = parent.getItemAtPosition(pos).toString();
+                var fromLanguage = languages.get(fromLanguageItemSelected).toString()
 
+                // set from language
+                this.translatorService.from_language = fromLanguage
+
+                // manage UI & download model
                 translate_button.isEnabled = false;
                 translate_button.isEnabled = false;
                 info_message.text = "State: Downloading translation model... Please wait."
@@ -165,17 +171,27 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                 }, {
                     translate_button.isEnabled = false;
                     translate_button.isEnabled = false;
+                    info_message.text = "Error: Model download failed, retrying..."
+                }, {
                     info_message.text = "Error: App can't download the translation model, please check your wifi connection or used languages..."
                 })
             }
 
             R.id.to_language_spinner -> {
-                var to_language = parent.getItemAtPosition(pos).toString();
-                this.translatorService.to_language = languages.get(to_language).toString()
+                // get language
+                var toLanguageItemSelected = parent.getItemAtPosition(pos).toString();
+                var toLanguage = languages.get(toLanguageItemSelected).toString()
 
+                // set target language
+                this.translatorService.to_language = toLanguage
+
+                // manage UI & download model
                 translate_button.isEnabled = false;
                 translate_button.isEnabled = false;
+
                 info_message.text = "Downloading translation model... Please wait."
+                translated_text.text = "" // force reseting output value when we change value
+
                 this.translatorService.downloadModelIfNeeded({
                     translate_button.isEnabled = true;
                     translate_button.isEnabled = true;
@@ -183,6 +199,8 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                 }, {
                     translate_button.isEnabled = false;
                     translate_button.isEnabled = false;
+                    info_message.text = "Error: Model download failed, retrying..."
+                }, {
                     info_message.text = "Error: App can't download the translation model, please check your wifi connection or used languages..."
                 })
             }
