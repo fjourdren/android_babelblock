@@ -54,7 +54,7 @@ class ToolChainAdapter(val context: Context, val toolChain: ToolChain) : Recycle
 
 
             // rendering input and output fields management
-            if(tool.input == null) { // We show "nothing." if the string is null (if string is == "" => we don't show anything)
+            if(tool.input == null || tool.input == "") { // We show "nothing." if the string is null or == ""
                 itemView.input_value.text = "Nothing."
                 itemView.input_value.setTextColor(this.view.context.resources.getColor(R.color.red))
             } else {
@@ -62,7 +62,7 @@ class ToolChainAdapter(val context: Context, val toolChain: ToolChain) : Recycle
                 itemView.input_value.setTextColor(this.view.context.resources.getColor(R.color.default_in_out))
             }
 
-            if(tool.output == null) { // We show "nothing." if the string is null (if string is == "" => we don't show anything)
+            if(tool.output == null || tool.output == "") { // We show "nothing." if the string is null or == ""
                 itemView.output_value.text = "Nothing."
                 itemView.output_value.setTextColor(this.view.context.resources.getColor(R.color.red))
             } else {
