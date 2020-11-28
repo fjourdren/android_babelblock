@@ -24,10 +24,32 @@ class TextToSpeechActivity : BaseActivity(), AdapterView.OnItemSelectedListener 
         // set activity's layout
         setContentView(R.layout.activity_text_to_speech)
 
+
+
+        /* === FIRST SPINNERS INIT (before speaker init, just add user's default locale to not have a void spinner) === */
+        localesLanguagesObjects.add(Locale.getDefault())
+        localesLanguagesUI.add(Locale.getDefault().displayLanguage)
+
+        // make adapter
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, localesLanguagesUI)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        // populate language_spinner
+        language_spinner.adapter = adapter
+
+        // set default language_spinner value to only element
+        language_spinner.setSelection(0)
+
+
+
+
         // init text to speech service
         // use a callback to be sure that the speaker is initialized and that we can now use speaker's isLanguageAvailable func
-        this.serviceTTS = TextToSpeechService(this.applicationContext, Locale.getDefault()) {
+        this.serviceTTS = TextToSpeechService(this.applicationContext, Locale.getDefault()) { // THIS TIME WE HAVE ACCESS TO SPEAKER AVAILABLE LANGUAGE SO WE REBUILD THE SPINNER CONTENT
             /* === SPINNERS INIT === */
+            localesLanguagesObjects.clear()
+            localesLanguagesUI.clear()
+
             // create language_spinner
             Locale.getAvailableLocales().forEach {
                 // this.serviceTTS.speaker.availableLanguages can be used for android > 5.0
