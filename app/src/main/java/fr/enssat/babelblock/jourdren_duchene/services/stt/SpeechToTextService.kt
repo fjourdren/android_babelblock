@@ -16,7 +16,7 @@ class SpeechToTextService: Service {
 
     private var speechRecognizer: SpeechRecognizer
     private var listener: Listener
-    private var intent: Intent
+    private lateinit var intent: Intent
 
     constructor(context: Context, locale: Locale, listener: Listener): super(context) {
         this.locale = locale
@@ -61,13 +61,21 @@ class SpeechToTextService: Service {
             })
         }
 
+        buildSTT()
+    }
+
+    private fun buildSTT() {
+        val loc: Locale = this.locale
         this.intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, locale)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
         }
+
+        Log.d("SpeechToTextService", "Change language to ${loc.displayLanguage}")
     }
 
     override fun run() {
+        buildSTT()
         this.speechRecognizer.startListening(this.intent)
     }
 

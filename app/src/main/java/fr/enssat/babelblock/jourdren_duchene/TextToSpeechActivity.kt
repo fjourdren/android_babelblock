@@ -1,17 +1,12 @@
 package fr.enssat.babelblock.jourdren_duchene
 
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
-import fr.enssat.babelblock.jourdren_duchene.services.translation.languages
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
 import kotlinx.android.synthetic.main.activity_text_to_speech.*
 import kotlinx.android.synthetic.main.activity_text_to_speech.edit_query
-import kotlinx.android.synthetic.main.activity_translator.*
 import java.util.*
 
 
@@ -53,24 +48,24 @@ class TextToSpeechActivity : BaseActivity(), AdapterView.OnItemSelectedListener 
             val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, localesLanguagesUI)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-            // populate from_language_spinner
+            // populate language_spinner
             language_spinner.adapter = adapter
 
             // set default language_spinner value
             language_spinner.setSelection(adapter.getPosition(Locale.getDefault().displayLanguage))
-
-
-            // voice synthesizer button listener
-            play_button.setOnClickListener {
-                val text: String = edit_query.text.toString()
-                this.serviceTTS.input = text // send text to the service
-                this.serviceTTS.run()
-            }
         }
 
 
         // language spinner listener
         language_spinner.onItemSelectedListener = this;
+
+
+        // voice synthesizer button listener
+        play_button.setOnClickListener {
+            val text: String = edit_query.text.toString()
+            this.serviceTTS.input = text // send text to the service
+            this.serviceTTS.run()
+        }
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
