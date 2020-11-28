@@ -18,7 +18,7 @@ class TranslatorService: Service {
             } catch (e: Exception) {}
 
             field = new_lang
-            this.buildObject()
+            this.buildTranslator()
         }
     var to_language: String = TranslateLanguage.ENGLISH
         set(new_lang) {  // force build the translator with new language by using a setter
@@ -26,7 +26,7 @@ class TranslatorService: Service {
                 this.deleteModel(this.to_language) // delete old to language model (adviced in the doc)
             } catch (e: Exception) {}
             field = new_lang
-            this.buildObject()
+            this.buildTranslator()
         }
 
     private lateinit var translatorOptions: TranslatorOptions
@@ -42,7 +42,7 @@ class TranslatorService: Service {
         downloadModelIfNeeded()
     }
 
-    fun buildObject() {
+    private fun buildTranslator() {
         this.translatorOptions = TranslatorOptions.Builder().setSourceLanguage(this.from_language).setTargetLanguage(this.to_language).build() // configure languages
         this.translator = Translation.getClient(this.translatorOptions)
     }
