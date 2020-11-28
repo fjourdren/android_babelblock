@@ -34,12 +34,20 @@
 
     <TextView
         android:id="@+id/textView6"
-        android:layout_width="300dp"
+        android:layout_width="150dp"
         android:layout_height="33dp"
         android:layout_marginBottom="4dp"
         android:text="Input"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toTopOf="@+id/edit_query"
         app:layout_constraintStart_toStartOf="@+id/edit_query" />
+
+    <Spinner
+        android:id="@+id/language_spinner"
+        android:layout_width="150dp"
+        android:layout_height="33dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toTopOf="@+id/textView6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
