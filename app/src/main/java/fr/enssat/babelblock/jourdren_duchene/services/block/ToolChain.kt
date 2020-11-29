@@ -1,4 +1,4 @@
-package fr.enssat.babelblock.jourdren_duchene.tools.ui
+package fr.enssat.babelblock.jourdren_duchene.services.block
 
 interface Tool {
     fun run(input: String, callback: (String) -> Unit)

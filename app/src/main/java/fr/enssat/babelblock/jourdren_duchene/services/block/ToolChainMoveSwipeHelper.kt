@@ -1,9 +1,7 @@
-package fr.enssat.babelblock.jourdren_duchene.tools.ui
+package fr.enssat.babelblock.jourdren_duchene.services.block
 
-import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 
 
 interface ItemMoveAdapter {
@@ -13,9 +11,7 @@ interface ItemMoveAdapter {
     fun onRowReleased(viewHolder: RecyclerView.ViewHolder)
 }
 
-// https://www.journaldev.com/23208/android-recyclerview-drag-and-drop
-// https://www.journaldev.com/23164/android-recyclerview-swipe-to-delete-undo
-object ToolChainMoveHelper {
+object ToolChainMoveSwipeHelper {
     fun create(adapter: ItemMoveAdapter) = ItemTouchHelper(ItemMoveCallback(adapter))
 }
 

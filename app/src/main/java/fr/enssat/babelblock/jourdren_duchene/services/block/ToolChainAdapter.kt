@@ -1,4 +1,4 @@
-package fr.enssat.babelblock.jourdren_duchene.tools.ui
+package fr.enssat.babelblock.jourdren_duchene.services.block
 
 import android.content.Context
 import android.graphics.Color
@@ -53,6 +53,11 @@ class ToolChainAdapter(val context: Context, val toolChain: ToolChain) : Recycle
             val tool = toolChain.get(i)
 
 
+            // rendering tool title management
+            itemView.tool_title.text = tool.title
+            itemView.params.text = tool.title
+
+
             // rendering input and output fields management
             if(tool.input == null || tool.input == "") { // We show "nothing." if the string is null or == ""
                 itemView.input_value.text = "Nothing."
@@ -69,10 +74,6 @@ class ToolChainAdapter(val context: Context, val toolChain: ToolChain) : Recycle
                 itemView.output_value.text = tool.output
                 itemView.output_value.setTextColor(this.view.context.resources.getColor(R.color.default_in_out))
             }
-
-
-            // rendering tool title management
-            itemView.params.text = tool.title
 
 
             // render tool in the pipeline
