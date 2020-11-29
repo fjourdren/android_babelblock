@@ -11,7 +11,7 @@ import java.util.*
 
 class TranslatorService: Service {
 
-    var from_language: String = TranslateLanguage.FRENCH
+    var from_language: Locale = Locale.FRENCH
         set(new_lang) {  // force build the translator with new language by using a setter
             try {
                 this.deleteModel(this.from_language) // delete old from language model (adviced in the doc)
@@ -20,7 +20,7 @@ class TranslatorService: Service {
             field = new_lang
             this.buildTranslator()
         }
-    var to_language: String = TranslateLanguage.ENGLISH
+    var to_language: Locale = Locale.ENGLISH
         set(new_lang) {  // force build the translator with new language by using a setter
             try {
                 this.deleteModel(this.to_language) // delete old to language model (adviced in the doc)
@@ -34,7 +34,7 @@ class TranslatorService: Service {
 
     private val modelManager = RemoteModelManager.getInstance()
 
-    constructor(context: Context, from_language: String, to_language: String): super(context) {
+    constructor(context: Context, from_language: Locale, to_language: Locale): super(context) {
         this.from_language = from_language
         this.to_language = to_language
 
@@ -43,7 +43,7 @@ class TranslatorService: Service {
     }
 
     private fun buildTranslator() {
-        this.translatorOptions = TranslatorOptions.Builder().setSourceLanguage(this.from_language).setTargetLanguage(this.to_language).build() // configure languages
+        this.translatorOptions = TranslatorOptions.Builder().setSourceLanguage(this.from_language.language).setTargetLanguage(this.to_language.language).build() // configure languages
         this.translator = Translation.getClient(this.translatorOptions)
     }
 
@@ -65,8 +65,8 @@ class TranslatorService: Service {
                     this.deleteModel(this.to_language)
 
                     // retry to re-download both models
-                    val modelFrom =  TranslateRemoteModel.Builder(this.from_language).build()
-                    val modelTo =  TranslateRemoteModel.Builder(this.to_language).build()
+                    val modelFrom =  TranslateRemoteModel.Builder(this.from_language.language).build()
+                    val modelTo =  TranslateRemoteModel.Builder(this.to_language.language).build()
 
                     // downloading two models
                     modelManager.download(modelFrom, downloadConditions).addOnFailureListener {
@@ -85,14 +85,14 @@ class TranslatorService: Service {
         this.translator.translate(text).addOnSuccessListener(callback).addOnFailureListener { e -> Log.e("TranslatorService", "Translation failed", e) }
     }
 
-    private fun deleteModel(languageToDelete: String) {
+    private fun deleteModel(languageToDelete: Locale) {
         // get model to delete
-        val model =  TranslateRemoteModel.Builder(languageToDelete).build()
+        val model =  TranslateRemoteModel.Builder(languageToDelete.language).build()
         val modelRemote = model as RemoteModel
 
         // if the model exists, to be sure that we try to delete an existing model (absolutely needed, otherwise our dynamic model deletion makes app crash)
         this.modelManager.isModelDownloaded(modelRemote).addOnSuccessListener { modelExists ->
-            if(modelExists && model.language != Locale.getDefault().language && model.language != "en") { // check also that the model in deletion isn't the main phone language or english
+            if(modelExists && model.language != Locale.getDefault().language && model.language != Locale.ENGLISH.language) { // check also that the model in deletion isn't the main phone language or english
                 Log.d("Model Management", "Deleting ${model.language} model")
 
                 // delete any previous downloaded models
