@@ -9,14 +9,20 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.enssat.babelblock.jourdren_duchene.R
 import kotlinx.android.synthetic.main.list_item_tool_chain.view.*
 
-class ToolChainAdapter(val context: Context, val toolChain: ToolChain) : RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>(), ItemMoveAdapter {
+class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, ItemMoveAdapter {
 
-    init {
+    override var items: ToolChain
+    var context: Context
+
+    constructor(context: Context, items: ToolChain): super() {
+        this.context = context
+        this.items = items
+
         //notifyDataSetChanged() = redraw, the data set has changed
-        toolChain.setOnChangeListener { notifyDataSetChanged() }
+        this.items.setOnChangeListener { notifyDataSetChanged() }
     }
 
-    override fun getItemCount(): Int = toolChain.size
+    override fun getItemCount(): Int = this.items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToolViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_tool_chain, parent, false)
@@ -24,16 +30,16 @@ class ToolChainAdapter(val context: Context, val toolChain: ToolChain) : Recycle
     }
 
     override fun onBindViewHolder(holder: ToolViewHolder, position: Int) {
-        holder.bind(toolChain, position)
+        holder.bind(this.items, position)
     }
 
     override fun onRowMoved(from: Int, to: Int) {
-        toolChain.move(from, to)
+        this.items.move(from, to)
         notifyItemMoved(from, to)
     }
 
     override fun onRowDeleted(target: Int) {
-        toolChain.remove(target)
+        this.items.remove(target)
         notifyDataSetChanged()
     }
 
@@ -43,6 +49,11 @@ class ToolChainAdapter(val context: Context, val toolChain: ToolChain) : Recycle
 
     override fun onRowReleased(viewHolder: RecyclerView.ViewHolder) {
         viewHolder.itemView.setBackgroundColor(this.context.resources.getColor(R.color.block_color))
+    }
+
+    override fun onRowRestore(position: Int, item: ToolDisplay) {
+        this.items.addAt(position, item)
+        notifyItemInserted(position);
     }
 
     // viewholder, kind of reusable view cache, for each tool in the chain
