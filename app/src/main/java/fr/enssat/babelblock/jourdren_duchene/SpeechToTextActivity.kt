@@ -53,7 +53,7 @@ class SpeechToTextActivity : BaseActivity(), AdapterView.OnItemSelectedListener 
 
 
         /* === SPINNERS INIT === */
-        // create language_spinner
+        // create adapter's array
         Locale.getAvailableLocales().forEach {
             if (it.country == "") { // remove duplicated languages when this one is used in different countries (it just take the most basic one)
                 localesLanguagesObjects.add(it) // add to localesLanguagesObjects list
