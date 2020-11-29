@@ -30,12 +30,18 @@ class ToolChain(list: List<ToolDisplay> = emptyList()) {
         onChangeListener?.invoke()
     }
 
-    fun get(index: Int) = list.get(index)
+    // add at a specific location
+    fun addAt(index: Int, tool: ToolDisplay) {
+        list.add(index, tool)
+        onChangeListener?.invoke()
+    }
+
+    operator fun get(index: Int) = list.get(index)
 
     // remove and insert
     fun move(from: Int, to: Int) {
-        val draged = list.removeAt(from)
-        list.add(to, draged)
+        val dragged = list.removeAt(from)
+        list.add(to, dragged)
     }
 
     // delete tool
