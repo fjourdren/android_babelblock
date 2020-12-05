@@ -54,7 +54,8 @@ class MainActivity : BaseActivity() {
         // Translation pipelining button listener
         main_button_pipeline.setOnTouchListener { v, event ->
             if(event.action == MotionEvent.ACTION_DOWN) {
-                Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, PipelineActivity::class.java)
+                startActivity(intent)
             }
             false
         }
