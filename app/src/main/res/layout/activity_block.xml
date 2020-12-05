@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tool_list"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/list_item_tool_chain"/>
+        tools:listitem="@layout/block_item"/>
 
     <ListView
         android:id="@+id/tool_list"

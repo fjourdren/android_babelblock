@@ -4,11 +4,10 @@ import android.graphics.Color
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_tool_chain.*
 
 
 interface ItemMoveAdapter {
-    var items: ToolChain
+    var itemsChain: ToolChain
 
     fun onRowMoved(from: Int, to: Int)
     fun onRowDeleted(target: Int)
@@ -37,7 +36,7 @@ private class ItemMoveCallback(private val adapter: ItemMoveAdapter): ItemTouchH
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         val position: Int = viewHolder.adapterPosition
-        val item: ToolDisplay = adapter.items[position]
+        val item: ToolDisplay = adapter.itemsChain[position]
 
         adapter.onRowDeleted(viewHolder.adapterPosition)
 
