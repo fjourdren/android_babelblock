@@ -6,7 +6,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.ArrayAdapter
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.*
-import kotlinx.android.synthetic.main.activity_tool_chain.*
+import kotlinx.android.synthetic.main.activity_pipeline.*
 
 // inherit BaseActivity to manage menuInflater
 class PipelineActivity : BaseActivity() {
@@ -16,7 +16,7 @@ class PipelineActivity : BaseActivity() {
     private val toolsList = arrayOf("STT", "Translator", "TTS")
 
     private fun getTool(ind: Int) = object: ToolDisplay {
-                override var title  = "Block $ind"
+                override var title = toolsList[ind]
 
                 override var output = ""
                 override var input  = ""
@@ -35,7 +35,7 @@ class PipelineActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tool_chain)
+        setContentView(R.layout.activity_pipeline)
 
         // create toolchain and its adapter
         val toolChain = ToolChain()

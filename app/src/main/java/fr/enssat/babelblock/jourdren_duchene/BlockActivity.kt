@@ -6,7 +6,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.ArrayAdapter
 import fr.enssat.babelblock.jourdren_duchene.services.block.*
-import kotlinx.android.synthetic.main.activity_tool_chain.*
+import kotlinx.android.synthetic.main.activity_block.*
 
 // inherit BaseActivity to manage menuInflater
 class BlockActivity : BaseActivity() {
@@ -36,7 +36,7 @@ class BlockActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tool_chain)
+        setContentView(R.layout.activity_block)
 
         // create toolchain and its adapter
         val toolChain = ToolChain()

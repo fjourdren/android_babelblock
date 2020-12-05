@@ -7,39 +7,39 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import fr.enssat.babelblock.jourdren_duchene.R
-import kotlinx.android.synthetic.main.list_item_tool_chain.view.*
+import kotlinx.android.synthetic.main.block_item.view.*
 
 class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, ItemMoveAdapter {
 
-    override var items: ToolChain
+    override var itemsChain: ToolChain
     var context: Context
 
     constructor(context: Context, items: ToolChain): super() {
         this.context = context
-        this.items = items
+        this.itemsChain = items
 
         //notifyDataSetChanged() = redraw, the data set has changed
-        this.items.setOnChangeListener { notifyDataSetChanged() }
+        this.itemsChain.setOnChangeListener { notifyDataSetChanged() }
     }
 
-    override fun getItemCount(): Int = this.items.size
+    override fun getItemCount(): Int = this.itemsChain.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToolViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_tool_chain, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.block_item, parent, false)
         return ToolViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ToolViewHolder, position: Int) {
-        holder.bind(this.items, position)
+        holder.bind(this.itemsChain, position)
     }
 
     override fun onRowMoved(from: Int, to: Int) {
-        this.items.move(from, to)
+        this.itemsChain.move(from, to)
         notifyItemMoved(from, to)
     }
 
     override fun onRowDeleted(target: Int) {
-        this.items.remove(target)
+        this.itemsChain.remove(target)
         notifyDataSetChanged()
     }
 
@@ -52,7 +52,7 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
     }
 
     override fun onRowRestore(position: Int, item: ToolDisplay) {
-        this.items.addAt(position, item)
+        this.itemsChain.addAt(position, item)
         notifyItemInserted(position);
     }
 
