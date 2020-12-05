@@ -60,7 +60,8 @@ open class BaseActivity: AppCompatActivity() {
 
             // Final translation pipelining
             R.id.main_menu_pipeline -> {
-                Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, PipelineActivity::class.java)
+                startActivity(intent)
                 return true
             }
 

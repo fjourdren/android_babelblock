@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Babelblock">
         <activity android:name=".MainActivity"
-            android:label="@string/main_title"
+            android:label="@string/home"
             android:screenOrientation="userLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +29,7 @@
 
         <activity
             android:name=".TranslatorActivity"
-            android:label="@string/trs"
+            android:label="@string/translate"
             android:screenOrientation="userLandscape" />
 
         <activity
@@ -45,9 +45,13 @@
 
         <activity
             android:name=".BlockActivity"
-            android:label="@string/title_activity_block"
-            android:screenOrientation="userLandscape"
-            android:theme="@style/Theme.Babelblock.NoActionBar" />
+            android:label="@string/block"
+            android:screenOrientation="userLandscape" />
+
+        <activity
+            android:name=".PipelineActivity"
+            android:label="@string/pipeline"
+            android:screenOrientation="userLandscape" />
     </application>
 
 </manifest>

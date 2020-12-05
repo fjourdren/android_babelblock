@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/main_pipeline_title"
+        android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Display2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +80,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/main_menu_tts"
+            android:text="@string/tts"
             android:textSize="10sp" />
 
         <Button
@@ -90,7 +90,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/main_menu_translation"
+            android:text="@string/translate"
             android:textSize="10sp" />
 
         <Button
@@ -100,7 +100,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/main_menu_stt"
+            android:text="@string/stt"
             android:textSize="10sp" />
 
         <Button
@@ -110,7 +110,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/main_menu_block"
+            android:text="@string/block"
             android:textSize="10sp" />
 
         <Button
@@ -120,7 +120,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/main_menu_pipeline"
+            android:text="@string/pipeline"
             android:textSize="10sp" />
 
     </LinearLayout>
