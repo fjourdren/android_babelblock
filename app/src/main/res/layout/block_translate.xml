@@ -12,9 +12,9 @@
 
     <TextView
         android:id="@+id/tool_translate_info_message"
-        android:layout_width="0dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="122dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="4dp"
         android:gravity="center|center_horizontal|center_vertical"
         android:text="State: Init..."
         android:textAppearance="@style/TextAppearance.AppCompat.Small"

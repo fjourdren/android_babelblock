@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.enssat.babelblock.jourdren_duchene.R
 import fr.enssat.babelblock.jourdren_duchene.services.translation.Language
 import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
+import kotlinx.android.synthetic.main.activity_translator.*
 import kotlinx.android.synthetic.main.block_translate.view.*
 import java.util.*
 
@@ -72,15 +73,22 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
         var localesLanguagesUI = mutableListOf<String>()
         var localesLanguagesObjects = mutableListOf<Locale>()
 
+        lateinit var tool: Tool
+        lateinit var serviceTranslator: TranslatorService
+
+        var nbSpinnerNotify = 0 // fix to not call spinner's listener when there is a notifyDataSetChanged()
+
         fun bind(toolChain: ToolChain, i: Int) {
 
             // get the tool in rendering
-            val tool = toolChain.get(i)
-            val serviceTranslator = tool.service as TranslatorService
+            this.tool = toolChain.get(i)
+            this.serviceTranslator = tool.service as TranslatorService
 
 
             // rendering tool title management
             itemView.tool_title.text = tool.title
+
+
 
 
             // rendering input and output fields management
@@ -129,7 +137,7 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
             from_language_spinner.adapter = adapter
 
             // set default from_language_spinner
-            from_language_spinner.setSelection(adapter.getPosition(Locale.FRENCH.displayLanguage))
+            from_language_spinner.setSelection(adapter.getPosition(this.serviceTranslator.from_language.displayLanguage))
 
 
 
@@ -138,7 +146,7 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
             to_language_spinner.adapter = adapter
 
             // set default to_language_spinner
-            to_language_spinner.setSelection(adapter.getPosition(Locale.ENGLISH.displayLanguage))
+            to_language_spinner.setSelection(adapter.getPosition(this.serviceTranslator.to_language.displayLanguage))
 
 
 
@@ -147,8 +155,11 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
             // from spinner on item selected listener
             from_language_spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                    Log.d("from: ", localesLanguagesObjects[position].toString())
+                    val old_value = serviceTranslator.from_language
                     serviceTranslator.from_language = localesLanguagesObjects[position]
+
+                    // manage UI & download model
+                    downloadTranslationModel()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -162,14 +173,34 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
             // to spinner on item selected listener
             to_language_spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                    Log.d("to: ", localesLanguagesObjects[position].toString())
+                    val old_value = serviceTranslator.to_language
                     serviceTranslator.to_language = localesLanguagesObjects[position]
+
+                    // manage UI & download model
+                    downloadTranslationModel()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                     // another interface callback
                 }
             }
+        }
+
+
+        fun downloadTranslationModel() {
+            itemView.tool_translate_info_message.text = "Downloading translation model... Please wait."
+            // force reseting output value when we change value
+            itemView.output_value.text = ""
+            tool.output = ""
+            this.serviceTranslator.output = ""
+
+            this.serviceTranslator.downloadModelIfNeeded({
+                itemView.tool_translate_info_message.text = "State: Ready."
+            }, {
+                itemView.tool_translate_info_message.text = "Error: Model download failed, retrying..."
+            }, {
+                itemView.tool_translate_info_message.text = "Error: App can't download the translation model, please check your wifi connection or used languages..."
+            })
         }
     }
 }
