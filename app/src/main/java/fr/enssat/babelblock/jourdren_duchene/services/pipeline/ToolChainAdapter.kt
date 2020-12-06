@@ -56,6 +56,10 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
         notifyItemInserted(position);
     }
 
+
+
+
+
     // viewholder, kind of reusable view cache, for each tool in the chain
     class ToolViewHolder(val view: View): RecyclerView.ViewHolder(view) {
         fun bind(toolChain: ToolChain, i: Int) {

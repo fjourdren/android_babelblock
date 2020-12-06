@@ -21,7 +21,7 @@ class PipelineActivity : BaseActivity() {
                 override var output = ""
                 override var input  = ""
 
-                override val tool   = object : Tool {
+                override val tool = object : Tool {
                     // override run method of Tool interface
                     override fun run(input: String, output: (String) -> Unit) {
                         handler.postDelayed({output("$input $ind")},1000)
