@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toTopOf="@+id/label_output"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_stt_language_spinner"
+        app:layout_constraintTop_toBottomOf="@+id/tool_tts_language_spinner"
         app:srcCompat="@android:drawable/ic_media_play" />
 
     <TextView
@@ -89,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
-        android:id="@+id/tool_stt_language_spinner"
+        android:id="@+id/tool_tts_language_spinner"
         android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="4dp"

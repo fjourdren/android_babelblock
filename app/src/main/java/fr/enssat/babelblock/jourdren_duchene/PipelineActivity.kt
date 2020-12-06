@@ -10,36 +10,69 @@ import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChain
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainAdapter
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainMoveSwipeHelper
 import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
+import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
 import kotlinx.android.synthetic.main.activity_pipeline.*
+import kotlinx.android.synthetic.main.activity_tts.*
+import java.lang.Error
 import java.util.*
 
 
 // inherit BaseActivity to manage menuInflater
 class PipelineActivity : BaseActivity() {
 
-    private val toolsList = arrayOf("STT", "Translator", "TTS")
+    private val toolsList = arrayOf("TTS", "Translator", "STT")
 
-    private fun getTool(ind: Int, context: Context) = object: Tool {
+    private fun getTool(ind: Int, context: Context): Tool {
+        Log.d("deb", ind.toString())
+        when(ind) {
+            0 -> return object: Tool {
                 override var title = toolsList[ind]
 
                 override var input  = ""
                 override var output = ""
 
-                override var service: Service = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
+
+                override var service: Any = TextToSpeechService(context, Locale.FRENCH)
 
                 // override run method of Tool interface
                 override fun run(input: String, output: (String) -> Unit) {
-                    Log.d("RUNNN", "RUN")
-                    service.run(this.input) { enText ->
-                        Log.d("output: ", enText)
-                        output(enText)
-                    }
+                    (this.service as TextToSpeechService).input = input // send text to the service
+                    (this.service as TextToSpeechService).run()
                 }
 
                 override fun close() {
                     Log.d(title, "close")
                 }
             }
+            1 -> return object: Tool {
+                    override var title = toolsList[ind]
+
+                    override var input  = ""
+                    override var output = ""
+
+
+                    override var service: Any = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
+
+                    // override run method of Tool interface
+                    override fun run(input: String, output: (String) -> Unit) {
+                        (this.service as TranslatorService).run(this.input) { enText ->
+                            Log.d("output: ", enText)
+                            output(enText)
+                        }
+                    }
+
+                    override fun close() {
+                        Log.d(title, "close")
+                    }
+            }
+            else -> { // Note the block
+                Log.e("Error", "Not a valid service id")
+                throw Error("Not a valid service id")
+            }
+        }
+
+        throw Error("Not a valid service id")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,3 +102,51 @@ class PipelineActivity : BaseActivity() {
         }
     }
 }
+
+
+
+/*
+
+        0 -> object: Tool {
+                override var title = toolsList[ind]
+
+                override var input  = ""
+                override var output = ""
+
+
+                override lateinit var service: Service
+
+                init {
+                    Log.d("test", ind.toString())
+                    when(ind) {
+                        0 -> {
+                            service = TextToSpeechService(context, Locale.FRENCH)
+                        }
+                        1 -> {
+                            service = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
+                        }
+                        else -> { // Note the block
+                            Log.e("Error", "Not a valid service id")
+                        }
+                    }
+                }
+
+                // override run method of Tool interface
+                override fun run(input: String, output: (String) -> Unit) {
+                    Log.d("RUNNN", "RUN")
+
+                    when(ind) {
+                        0 -> { // text to speech
+                            this.service.input = input // send text to the service
+                            (this.service as TextToSpeechService).run()
+                        }
+                        1 -> { // translate
+                            service.run(this.input) { enText ->
+                                Log.d("output: ", enText)
+                                output(enText)
+                            }
+                        }
+                        else -> { // Note the block
+                            Log.e("Error", "Not a valid service id")
+                        }
+                    }*/
