@@ -2,12 +2,19 @@ package fr.enssat.babelblock.jourdren_duchene.services.pipeline
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import fr.enssat.babelblock.jourdren_duchene.R
-import kotlinx.android.synthetic.main.block_item.view.*
+import fr.enssat.babelblock.jourdren_duchene.services.translation.Language
+import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
+import kotlinx.android.synthetic.main.block_translate.view.*
+import java.util.*
+
 
 class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, ItemMoveAdapter {
 
@@ -25,7 +32,7 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
     override fun getItemCount(): Int = this.itemsChain.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToolViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.block_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.block_translate, parent, false)
         return ToolViewHolder(view)
     }
 
@@ -51,7 +58,7 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
         viewHolder.itemView.setBackgroundColor(this.context.resources.getColor(R.color.block_color))
     }
 
-    override fun onRowRestore(position: Int, item: ToolDisplay) {
+    override fun onRowRestore(position: Int, item: Tool) {
         this.itemsChain.addAt(position, item)
         notifyItemInserted(position);
     }
@@ -62,15 +69,18 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
 
     // viewholder, kind of reusable view cache, for each tool in the chain
     class ToolViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+        var localesLanguagesUI = mutableListOf<String>()
+        var localesLanguagesObjects = mutableListOf<Locale>()
+
         fun bind(toolChain: ToolChain, i: Int) {
 
             // get the tool in rendering
             val tool = toolChain.get(i)
+            val serviceTranslator = tool.service as TranslatorService
 
 
             // rendering tool title management
             itemView.tool_title.text = tool.title
-            itemView.params.text = tool.title
 
 
             // rendering input and output fields management
@@ -91,9 +101,74 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
             }
 
 
-            // render tool in the pipeline
-            itemView.params.setOnClickListener {
-                toolChain.display(i)
+
+
+
+            // Spinner management
+            /* === SPINNERS INIT === */
+            // create adapter's array & sort locales by displayLanguage
+            localesLanguagesObjects = Language.generateMLKitAvailableLocales().sortedBy { it.displayLanguage } as MutableList<Locale>
+
+            // foreach to make localesLanguagesUI with sorted localesLanguagesObjects (need to be done in two foreach because we can't order displayLanguage without doing that)
+            localesLanguagesObjects.forEach {
+                localesLanguagesUI.add(it.displayLanguage) // display language in the user's default locale
+            }
+
+
+
+            // create to_language_spinner and from_language_spinner adapter
+            val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_item, localesLanguagesUI)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+
+
+
+
+            // populate from_language_spinner
+            val from_language_spinner = view.tool_translate_from_language_spinner
+            from_language_spinner.adapter = adapter
+
+            // set default from_language_spinner
+            from_language_spinner.setSelection(adapter.getPosition(Locale.FRENCH.displayLanguage))
+
+
+
+            // populate to_language_spinner
+            val to_language_spinner = view.tool_translate_to_language_spinner
+            to_language_spinner.adapter = adapter
+
+            // set default to_language_spinner
+            to_language_spinner.setSelection(adapter.getPosition(Locale.ENGLISH.displayLanguage))
+
+
+
+            // language spinners listeners
+
+            // from spinner on item selected listener
+            from_language_spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                    Log.d("from: ", localesLanguagesObjects[position].toString())
+                    serviceTranslator.from_language = localesLanguagesObjects[position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // another interface callback
+                }
+            }
+
+
+
+
+            // to spinner on item selected listener
+            to_language_spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                    Log.d("to: ", localesLanguagesObjects[position].toString())
+                    serviceTranslator.to_language = localesLanguagesObjects[position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // another interface callback
+                }
             }
         }
     }

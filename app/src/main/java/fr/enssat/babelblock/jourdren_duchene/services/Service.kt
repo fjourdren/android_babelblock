@@ -8,7 +8,7 @@ abstract class Service(context: Context) {
     lateinit var input: String;
     lateinit var output: String;
 
-    open fun run() {}
+    open fun run(text: String, callback: (String) -> Unit) {}
     open fun stop() {}
     open fun close() {}
 }

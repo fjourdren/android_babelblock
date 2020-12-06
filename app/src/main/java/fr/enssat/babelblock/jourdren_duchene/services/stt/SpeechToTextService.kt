@@ -74,7 +74,7 @@ class SpeechToTextService: Service {
         Log.d("SpeechToTextService", "Change language to ${loc.displayLanguage}")
     }
 
-    override fun run() {
+    fun run() {
         buildSTT()
         this.speechRecognizer.startListening(this.intent)
     }
