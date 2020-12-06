@@ -80,7 +80,7 @@ class TranslatorService: Service {
                 }
     }
 
-    fun run(text: String, callback: (String) -> Unit) {
+    override fun run(text: String, callback: (String) -> Unit) {
         // execute translation
         this.translator.translate(text).addOnSuccessListener(callback).addOnFailureListener { e -> Log.e("TranslatorService", "Translation failed", e) }
     }

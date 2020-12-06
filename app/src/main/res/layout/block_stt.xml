@@ -10,39 +10,19 @@
     android:orientation="vertical"
     android:padding="4dp">
 
-    <TextView
-        android:id="@+id/tool_translate_info_message"
-        android:layout_width="0dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center|center_horizontal|center_vertical"
-        android:text="State: Init..."
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textSize="8sp"
-        android:textStyle="bold|italic"
+    <ImageButton
+        android:id="@+id/tool_stt_record_button"
+        android:layout_width="75dp"
+        android:layout_height="37dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:tint="@android:color/holo_green_dark"
+        app:layout_constraintBottom_toTopOf="@+id/label_output"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_translate_to_language_spinner" />
-
-    <TextView
-        android:id="@+id/tool_translate_label_to_language"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Target language"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_translate_from_language_spinner" />
-
-    <Spinner
-        android:id="@+id/tool_translate_to_language_spinner"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_translate_label_to_language" />
+        app:layout_constraintTop_toBottomOf="@+id/tool_stt_language_spinner"
+        app:srcCompat="@android:drawable/ic_btn_speak_now" />
 
     <TextView
         android:id="@+id/input_value"
@@ -111,25 +91,25 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/tool_translate_label_from_language"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Source language"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_value" />
-
     <Spinner
-        android:id="@+id/tool_translate_from_language_spinner"
+        android:id="@+id/tool_stt_language_spinner"
         android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_translate_label_from_language" />
+        app:layout_constraintTop_toBottomOf="@+id/label_stt_language" />
+
+    <TextView
+        android:id="@+id/label_stt_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Language"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_value" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

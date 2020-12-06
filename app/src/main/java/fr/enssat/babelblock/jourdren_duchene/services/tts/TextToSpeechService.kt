@@ -34,7 +34,7 @@ class TextToSpeechService: Service {
         }
     }
 
-    override fun run() {
+    fun run() {
         // update speaker's language
         buildTTS()
 

@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".BlockActivity">
 
+    <ImageButton
+        android:id="@+id/pipeline_play_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="4dp"
+        android:tint="@android:color/holo_green_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tool_chain_list"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_media_play" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tool_chain_list"
         android:layout_width="0dp"
@@ -15,9 +27,11 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tool_list"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/block_item"/>
+        app:layout_constraintVertical_bias="0.094"
+        tools:listitem="@layout/block_item" />
 
     <ListView
         android:id="@+id/tool_list"

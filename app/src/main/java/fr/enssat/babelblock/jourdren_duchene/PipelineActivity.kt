@@ -1,35 +1,40 @@
 package fr.enssat.babelblock.jourdren_duchene
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.ArrayAdapter
+import fr.enssat.babelblock.jourdren_duchene.services.Service
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.*
+import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import kotlinx.android.synthetic.main.activity_pipeline.*
+import java.util.*
 
 // inherit BaseActivity to manage menuInflater
 class PipelineActivity : BaseActivity() {
 
-    val handler = Handler(Looper.getMainLooper())
-
     private val toolsList = arrayOf("STT", "Translator", "TTS")
 
-    private fun getTool(ind: Int) = object: ToolDisplay {
+    private fun getTool(ind: Int, context: Context) = object: Tool {
                 override var title = toolsList[ind]
 
+                override var input  = "Bonjour le monde"
                 override var output = ""
-                override var input  = ""
 
-                override val tool = object : Tool {
-                    // override run method of Tool interface
-                    override fun run(input: String, output: (String) -> Unit) {
-                        handler.postDelayed({output("$input $ind")},1000)
-                    }
+                override var service: Service = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
 
-                    override fun close() {
-                        Log.d(title, "close")
+                // override run method of Tool interface
+                override fun run(input: String, output: (String) -> Unit) {
+                    service.run(this.input) { enText ->
+                        Log.d("output: ", enText)
+                        output(enText)
                     }
+                }
+
+                override fun close() {
+                    Log.d(title, "close")
                 }
             }
 
@@ -51,8 +56,7 @@ class PipelineActivity : BaseActivity() {
         // see tool_list in activity_tool_chain.xml (simple ids list)
         tool_list.adapter = ArrayAdapter(this, R.layout.simple_text_view, toolsList)
         tool_list.setOnItemClickListener { _, _, position, _ ->
-            toolChain.add(getTool(position))
+            toolChain.add(getTool(position, this))
         }
-
     }
 }
