@@ -3,14 +3,17 @@ package fr.enssat.babelblock.jourdren_duchene
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.ArrayAdapter
 import fr.enssat.babelblock.jourdren_duchene.services.Service
-import fr.enssat.babelblock.jourdren_duchene.services.pipeline.*
+import fr.enssat.babelblock.jourdren_duchene.services.pipeline.Tool
+import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChain
+import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainAdapter
+import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainMoveSwipeHelper
 import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import kotlinx.android.synthetic.main.activity_pipeline.*
 import java.util.*
+
 
 // inherit BaseActivity to manage menuInflater
 class PipelineActivity : BaseActivity() {
@@ -20,13 +23,14 @@ class PipelineActivity : BaseActivity() {
     private fun getTool(ind: Int, context: Context) = object: Tool {
                 override var title = toolsList[ind]
 
-                override var input  = "Bonjour le monde"
+                override var input  = ""
                 override var output = ""
 
                 override var service: Service = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
 
                 // override run method of Tool interface
                 override fun run(input: String, output: (String) -> Unit) {
+                    Log.d("RUNNN", "RUN")
                     service.run(this.input) { enText ->
                         Log.d("output: ", enText)
                         output(enText)
@@ -57,6 +61,12 @@ class PipelineActivity : BaseActivity() {
         tool_list.adapter = ArrayAdapter(this, R.layout.simple_text_view, toolsList)
         tool_list.setOnItemClickListener { _, _, position, _ ->
             toolChain.add(getTool(position, this))
+        }
+
+
+        // run button on click
+        pipeline_play_button.setOnClickListener {
+            toolChain.display(0, "Bonjour le monde")
         }
     }
 }
