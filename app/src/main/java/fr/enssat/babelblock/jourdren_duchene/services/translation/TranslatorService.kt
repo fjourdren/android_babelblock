@@ -7,6 +7,7 @@ import com.google.mlkit.common.model.RemoteModel
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.nl.translate.*
 import fr.enssat.babelblock.jourdren_duchene.services.Service
+import kotlinx.android.synthetic.main.activity_translator.*
 import java.util.*
 
 class TranslatorService: Service {
@@ -82,7 +83,10 @@ class TranslatorService: Service {
 
     override fun run(text: String, callback: (String) -> Unit) {
         // execute translation
-        this.translator.translate(text).addOnSuccessListener(callback).addOnFailureListener { e -> Log.e("TranslatorService", "Translation failed", e) }
+        this.translator.translate(text).addOnSuccessListener { enText ->
+            super.output = enText
+            callback.invoke(enText)
+        }.addOnFailureListener { e -> Log.e("TranslatorService", "Translation failed", e) }
     }
 
     private fun deleteModel(languageToDelete: Locale) {
