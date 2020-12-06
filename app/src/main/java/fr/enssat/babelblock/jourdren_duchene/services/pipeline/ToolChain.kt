@@ -7,7 +7,7 @@ interface Tool {
     var input: String
     var output: String
 
-    var service: Service
+    var service: Any
 
     fun run(input: String, callback: (String) -> Unit)
     fun close()

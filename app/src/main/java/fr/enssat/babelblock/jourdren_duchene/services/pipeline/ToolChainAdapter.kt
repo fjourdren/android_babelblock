@@ -11,11 +11,17 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import fr.enssat.babelblock.jourdren_duchene.R
+import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
 import fr.enssat.babelblock.jourdren_duchene.services.translation.Language
 import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
 import kotlinx.android.synthetic.main.activity_tts.view.*
+import kotlinx.android.synthetic.main.activity_tts.view.language_spinner
 import kotlinx.android.synthetic.main.block_translate.view.*
+import kotlinx.android.synthetic.main.block_translate.view.input_value
+import kotlinx.android.synthetic.main.block_translate.view.output_value
+import kotlinx.android.synthetic.main.block_translate.view.tool_title
+import kotlinx.android.synthetic.main.block_tts.view.*
 import java.util.*
 
 
@@ -36,6 +42,7 @@ class ToolChainAdapter: Adapter<ViewHolder>, ItemMoveAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View
+        Log.d("viewType", viewType.toString())
         when(viewType) {
             0 -> {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.block_tts, parent, false)
@@ -47,18 +54,23 @@ class ToolChainAdapter: Adapter<ViewHolder>, ItemMoveAdapter {
             }
             else -> { // Note the block
                 Log.e("Error", "Not a valid ViewType")
-                throw Error("123")
+                throw Error("Not a valid ViewType")
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        Log.d("test", position.toString())
-        return position
+        if(this.itemsChain[position].service is TextToSpeechService) {
+            return 0
+        } else if(this.itemsChain[position].service is TranslatorService) {
+            return 1
+        }
+
+        return -1
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        when (holder.getItemViewType()) {
+        when (holder.itemViewType) {
             0 -> {
                 (holder as TTSHolder).bind(this.itemsChain, position)
             }
@@ -159,14 +171,14 @@ class ToolChainAdapter: Adapter<ViewHolder>, ItemMoveAdapter {
 
 
             // populate from_language_spinner
-            view.language_spinner.adapter = adapter
+            view.tool_tts_language_spinner.adapter = adapter
 
             // set default from_language_spinner
-            view.language_spinner.setSelection(adapter.getPosition(this.service.locale.displayLanguage))
+            view.tool_tts_language_spinner.setSelection(adapter.getPosition(this.service.locale.displayLanguage))
 
 
             // from spinner on item selected listener
-            view.language_spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            view.tool_tts_language_spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     service.locale = localesLanguagesObjects[position]
                 }
