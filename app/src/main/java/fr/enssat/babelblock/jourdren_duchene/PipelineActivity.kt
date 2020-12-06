@@ -2,7 +2,6 @@ package fr.enssat.babelblock.jourdren_duchene
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.widget.ArrayAdapter
 import fr.enssat.babelblock.jourdren_duchene.services.Service
