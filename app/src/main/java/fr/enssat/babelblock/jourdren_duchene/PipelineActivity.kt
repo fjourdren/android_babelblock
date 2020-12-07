@@ -77,14 +77,12 @@ class PipelineActivity : BaseActivity() {
 
                 // init service
                 override var service: Any = SpeechToTextService(context, Locale.getDefault(), object: Listener {
-                    override fun onResult(text: String, final: Boolean) {
-                        Log.d(title, "Final: $text")
-                    }
+                    override fun onResult(text: String, final: Boolean) {}
                 })
 
                 // run service
                 override fun run(input: String, output: (String) -> Unit) {
-                    output(this.output) // set output value
+                    output(this.output)
                 }
 
                 override fun close() {
