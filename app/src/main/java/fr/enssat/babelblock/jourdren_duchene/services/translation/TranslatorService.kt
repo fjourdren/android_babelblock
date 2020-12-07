@@ -14,18 +14,13 @@ class TranslatorService: Service {
 
     var from_language: Locale = Locale.FRENCH
         set(new_lang) {  // force build the translator with new language by using a setter
-            try {
-                this.deleteModel(this.from_language) // delete old from language model (adviced in the doc)
-            } catch (e: Exception) {}
-
+            this.deleteModel(this.from_language) // delete old from language model (adviced in the doc)
             field = new_lang
             this.buildTranslator()
         }
     var to_language: Locale = Locale.ENGLISH
         set(new_lang) {  // force build the translator with new language by using a setter
-            try {
-                this.deleteModel(this.to_language) // delete old to language model (adviced in the doc)
-            } catch (e: Exception) {}
+            this.deleteModel(this.to_language) // delete old to language model (adviced in the doc)
             field = new_lang
             this.buildTranslator()
         }

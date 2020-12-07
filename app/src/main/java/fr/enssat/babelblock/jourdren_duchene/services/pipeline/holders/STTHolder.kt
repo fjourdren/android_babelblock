@@ -87,7 +87,7 @@ class STTHolder(val view: View): RecyclerView.ViewHolder(view) {
 
 
 
-        /** Spinners init **/
+        /** Spinners listeners **/
         // from spinner on item selected listener
         view.tool_stt_language_spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
