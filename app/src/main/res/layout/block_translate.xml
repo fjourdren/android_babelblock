@@ -11,20 +11,6 @@
     android:padding="4dp">
 
     <TextView
-        android:id="@+id/tool_translate_info_message"
-        android:layout_width="122dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center|center_horizontal|center_vertical"
-        android:text="State: Init..."
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textSize="8sp"
-        android:textStyle="bold|italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_translate_to_language_spinner" />
-
-    <TextView
         android:id="@+id/tool_translate_label_to_language"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

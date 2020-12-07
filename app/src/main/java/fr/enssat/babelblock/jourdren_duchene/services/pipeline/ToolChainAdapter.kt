@@ -16,7 +16,6 @@ import fr.enssat.babelblock.jourdren_duchene.services.pipeline.holders.TextHolde
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.holders.TranslateHolder
 import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
 import fr.enssat.babelblock.jourdren_duchene.services.text.TextService
-import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
 
 class ToolChainAdapter: Adapter<ViewHolder>, ItemMoveAdapter {
@@ -65,10 +64,10 @@ class ToolChainAdapter: Adapter<ViewHolder>, ItemMoveAdapter {
     override fun getItemViewType(position: Int): Int {
         // get view type thanks to service type
         when(this.itemsChain[position].service) {
-            is TextToSpeechService -> return 0
-            is TranslatorService   -> return 1
-            is SpeechToTextService -> return 2
-            is TextService         -> return 3
+            is TextToSpeechService       -> return 0
+            is TranslatorPipelineService -> return 1
+            is SpeechToTextService       -> return 2
+            is TextService               -> return 3
         }
 
         return -1
@@ -88,9 +87,6 @@ class ToolChainAdapter: Adapter<ViewHolder>, ItemMoveAdapter {
             }
             PipelineActivity.TOOLS_TYPE.TEXT -> {
                 (holder as TextHolder).bind(this.itemsChain, position)
-            }
-            else -> { // Note the block
-                Log.e("Error", "Not a valid HolderType")
             }
         }
     }

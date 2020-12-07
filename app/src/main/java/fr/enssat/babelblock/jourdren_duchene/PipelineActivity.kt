@@ -4,14 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
+import fr.enssat.babelblock.jourdren_duchene.services.pipeline.*
 import fr.enssat.babelblock.jourdren_duchene.services.text.TextService
-import fr.enssat.babelblock.jourdren_duchene.services.pipeline.Tool
-import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChain
-import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainAdapter
-import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainMoveSwipeHelper
 import fr.enssat.babelblock.jourdren_duchene.services.stt.Listener
 import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
-import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
 import kotlinx.android.synthetic.main.activity_pipeline.*
 import java.lang.Error
@@ -57,11 +53,11 @@ class PipelineActivity : BaseActivity() {
                 override var output = ""
 
                 // init service
-                override var service: Any = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
+                override var service: Any = TranslatorPipelineService(context, Locale.FRENCH, Locale.ENGLISH)
 
                 // run service
                     override fun run(input: String, output: (String) -> Unit) {
-                        (this.service as TranslatorService).run(this.input) { enText ->
+                        (this.service as TranslatorPipelineService).run(this.input) { enText ->
                             Log.d("output: ", enText)
                             output(enText) // set output with translation
                         }
@@ -147,7 +143,7 @@ class PipelineActivity : BaseActivity() {
             if(toolChain[0].service is TextService) {
                 toolChain.display(0, toolChain[0].input)
             } else {
-                toolChain.display(0) // run pipeline without text tool has a first element
+                toolChain.display(0, "bonjour le monde") // run pipeline without text tool has a first element
             }
         }
     }
