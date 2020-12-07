@@ -11,13 +11,20 @@ class TextToSpeechService: Service {
 
     var locale: Locale
 
+    var serviceReady = false
+
+    var localesLanguagesUI = mutableListOf<String>()
+    var localesLanguagesObjects = mutableListOf<Locale>()
+
     constructor(context: Context, locale: Locale, callback: () -> Unit = {}): super(context) {
         // init locale
         this.locale = locale
 
         // init android's text to speech service
+        Log.d("INIT", "INIT")
         this.speaker = TextToSpeech(context) { status ->
             Log.d("TextToSpeechService", "Status: $status")
+            this.serviceReady = true
             callback.invoke()
         }
     }
@@ -34,7 +41,7 @@ class TextToSpeechService: Service {
         }
     }
 
-    override fun run() {
+    fun run() {
         // update speaker's language
         buildTTS()
 

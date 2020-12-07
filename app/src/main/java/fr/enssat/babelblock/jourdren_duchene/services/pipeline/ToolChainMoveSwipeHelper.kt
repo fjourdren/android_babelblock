@@ -13,7 +13,7 @@ interface ItemMoveAdapter {
     fun onRowDeleted(target: Int)
     fun onRowSelected(viewHolder: RecyclerView.ViewHolder)
     fun onRowReleased(viewHolder: RecyclerView.ViewHolder)
-    fun onRowRestore(position: Int, item: ToolDisplay)
+    fun onRowRestore(position: Int, item: Tool)
 }
 
 object ToolChainMoveSwipeHelper {
@@ -24,7 +24,7 @@ object ToolChainMoveSwipeHelper {
 private class ItemMoveCallback(private val adapter: ItemMoveAdapter): ItemTouchHelper.Callback() {
 
     override fun isLongPressDragEnabled() = true
-    override fun isItemViewSwipeEnabled() = true
+    override fun isItemViewSwipeEnabled() = true // enable swipe
 
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int = makeMovementFlags(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, ItemTouchHelper.UP)
@@ -36,8 +36,9 @@ private class ItemMoveCallback(private val adapter: ItemMoveAdapter): ItemTouchH
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         val position: Int = viewHolder.adapterPosition
-        val item: ToolDisplay = adapter.itemsChain[position]
+        val item: Tool = adapter.itemsChain[position]
 
+        // delete viewHolder action call
         adapter.onRowDeleted(viewHolder.adapterPosition)
 
         // undo deletion action
@@ -46,6 +47,7 @@ private class ItemMoveCallback(private val adapter: ItemMoveAdapter): ItemTouchH
             adapter.onRowRestore(position, item)
         }
 
+        // set 'undo' button in red
         snackbar.setActionTextColor(Color.RED)
         snackbar.show()
     }
