@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import fr.enssat.babelblock.jourdren_duchene.R
 import fr.enssat.babelblock.jourdren_duchene.services.translation.Language
-import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
+import fr.enssat.babelblock.jourdren_duchene.services.pipeline.TranslatorPipelineService
 import kotlinx.android.synthetic.main.activity_translator.*
 import kotlinx.android.synthetic.main.block_translate.view.*
 import java.util.*
@@ -74,7 +74,7 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
         var localesLanguagesObjects = mutableListOf<Locale>()
 
         lateinit var tool: Tool
-        lateinit var serviceTranslator: TranslatorService
+        lateinit var serviceTranslator: TranslatorPipelineService
 
         var nbSpinnerNotify = 0 // fix to not call spinner's listener when there is a notifyDataSetChanged()
 
@@ -82,7 +82,7 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
 
             // get the tool in rendering
             this.tool = toolChain.get(i)
-            this.serviceTranslator = tool.service as TranslatorService
+            this.serviceTranslator = tool.service as TranslatorPipelineService
 
 
             // rendering tool title management
@@ -157,9 +157,6 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     val old_value = serviceTranslator.from_language
                     serviceTranslator.from_language = localesLanguagesObjects[position]
-
-                    // manage UI & download model
-                    downloadTranslationModel()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -175,9 +172,6 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     val old_value = serviceTranslator.to_language
                     serviceTranslator.to_language = localesLanguagesObjects[position]
-
-                    // manage UI & download model
-                    downloadTranslationModel()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -186,21 +180,5 @@ class ToolChainAdapter: RecyclerView.Adapter<ToolChainAdapter.ToolViewHolder>, I
             }
         }
 
-
-        fun downloadTranslationModel() {
-            itemView.tool_translate_info_message.text = "Downloading translation model... Please wait."
-            // force reseting output value when we change value
-            itemView.output_value.text = ""
-            tool.output = ""
-            this.serviceTranslator.output = ""
-
-            this.serviceTranslator.downloadModelIfNeeded({
-                itemView.tool_translate_info_message.text = "State: Ready."
-            }, {
-                itemView.tool_translate_info_message.text = "Error: Model download failed, retrying..."
-            }, {
-                itemView.tool_translate_info_message.text = "Error: App can't download the translation model, please check your wifi connection or used languages..."
-            })
-        }
     }
 }
