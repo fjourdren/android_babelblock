@@ -1,7 +1,5 @@
 package fr.enssat.babelblock.jourdren_duchene.services.pipeline
 
-import fr.enssat.babelblock.jourdren_duchene.services.Service
-
 interface Tool {
     var title: String
     var input: String
