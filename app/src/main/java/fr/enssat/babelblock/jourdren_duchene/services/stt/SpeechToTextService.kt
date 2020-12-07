@@ -13,9 +13,9 @@ import java.util.*
 
 class SpeechToTextService: Service {
     var locale: Locale
+    var listener: Listener
 
     private var speechRecognizer: SpeechRecognizer
-    private var listener: Listener
     private lateinit var intent: Intent
 
     constructor(context: Context, locale: Locale, listener: Listener): super(context) {
@@ -74,7 +74,7 @@ class SpeechToTextService: Service {
         Log.d("SpeechToTextService", "Change language to ${loc.displayLanguage}")
     }
 
-    override fun run() {
+    fun run() {
         buildSTT()
         this.speechRecognizer.startListening(this.intent)
     }

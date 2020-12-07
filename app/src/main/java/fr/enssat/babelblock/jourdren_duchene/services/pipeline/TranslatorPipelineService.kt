@@ -1,4 +1,4 @@
-package fr.enssat.babelblock.jourdren_duchene.services.translation
+package fr.enssat.babelblock.jourdren_duchene.services.pipeline
 
 import android.content.Context
 import android.util.Log
@@ -7,25 +7,23 @@ import com.google.mlkit.common.model.RemoteModel
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.nl.translate.*
 import fr.enssat.babelblock.jourdren_duchene.services.Service
-import kotlinx.android.synthetic.main.activity_translator.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
-class TranslatorService: Service {
+class TranslatorPipelineService: Service {
 
     var from_language: Locale = Locale.FRENCH
         set(new_lang) {  // force build the translator with new language by using a setter
-            try {
-                this.deleteModel(this.from_language) // delete old from language model (adviced in the doc)
-            } catch (e: Exception) {}
-
             field = new_lang
             this.buildTranslator()
         }
     var to_language: Locale = Locale.ENGLISH
         set(new_lang) {  // force build the translator with new language by using a setter
-            try {
-                this.deleteModel(this.to_language) // delete old to language model (adviced in the doc)
-            } catch (e: Exception) {}
             field = new_lang
             this.buildTranslator()
         }
@@ -82,11 +80,33 @@ class TranslatorService: Service {
     }
 
     override fun run(text: String, callback: (String) -> Unit) {
-        // execute translation
-        this.translator.translate(text).addOnSuccessListener { enText ->
-            super.output = enText
-            callback.invoke(enText)
-        }.addOnFailureListener { e -> Log.e("TranslatorService", "Translation failed", e) }
+        // execute translation using coroutine
+        this.downloadModelIfNeeded({
+            CoroutineScope(IO).launch {
+                val enText = manageTranslate(text).await()
+                // Change context in order to be able to edit what is displayed on the application
+                withContext(Main){
+                    super.output = enText
+                    callback.invoke(enText)
+                }
+            }
+        }, {
+            Log.d("Model Management", "Error: Model download failed, retrying...")
+        }, {
+            Log.d("Model Management", "Error: App can't download the translation model, please check your wifi connection or used languages...")
+        })
+
+    }
+
+    private suspend fun manageTranslate(text: String): CompletableDeferred<String> {
+        // Function used to manage the translated string used with Deferred item and coroutine
+        val deferred = CompletableDeferred<String>()
+        this.translator.translate(text)
+                .addOnSuccessListener { resText -> deferred.complete(resText)}
+                .addOnFailureListener { e ->
+                    deferred.completeExceptionally(e)
+                    Log.e("TranslatorService", "Translation failed", e) }
+        return deferred
     }
 
     private fun deleteModel(languageToDelete: Locale) {

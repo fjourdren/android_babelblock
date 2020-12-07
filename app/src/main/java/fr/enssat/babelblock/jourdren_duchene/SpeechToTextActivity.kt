@@ -13,9 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import fr.enssat.babelblock.jourdren_duchene.services.stt.Listener
 import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
-import kotlinx.android.synthetic.main.activity_speech_to_text.*
-import kotlinx.android.synthetic.main.activity_speech_to_text.language_spinner
-import kotlinx.android.synthetic.main.activity_text_to_speech.*
+import kotlinx.android.synthetic.main.activity_stt.*
 import java.util.*
 
 // inherit BaseActivity to manage menuInflater
@@ -31,7 +29,7 @@ class SpeechToTextActivity : BaseActivity(), AdapterView.OnItemSelectedListener 
         super.onCreate(savedInstanceState)
 
         // set activity's layout
-        setContentView(R.layout.activity_speech_to_text)
+        setContentView(R.layout.activity_stt)
 
 
         // check that app has permission to listen
