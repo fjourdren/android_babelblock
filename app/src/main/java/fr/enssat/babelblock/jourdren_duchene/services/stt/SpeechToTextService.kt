@@ -13,9 +13,9 @@ import java.util.*
 
 class SpeechToTextService: Service {
     var locale: Locale
+    var listener: Listener
 
     private var speechRecognizer: SpeechRecognizer
-    private var listener: Listener
     private lateinit var intent: Intent
 
     constructor(context: Context, locale: Locale, listener: Listener): super(context) {

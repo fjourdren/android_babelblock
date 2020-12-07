@@ -4,15 +4,16 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
-import fr.enssat.babelblock.jourdren_duchene.services.Service
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.Tool
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChain
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainAdapter
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainMoveSwipeHelper
+import fr.enssat.babelblock.jourdren_duchene.services.stt.Listener
+import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
 import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
 import kotlinx.android.synthetic.main.activity_pipeline.*
-import kotlinx.android.synthetic.main.activity_tts.*
+import kotlinx.android.synthetic.main.block_translate.view.*
 import java.lang.Error
 import java.util.*
 
@@ -23,7 +24,6 @@ class PipelineActivity : BaseActivity() {
     private val toolsList = arrayOf("TTS", "Translator", "STT")
 
     private fun getTool(ind: Int, context: Context): Tool {
-        Log.d("deb", ind.toString())
         when(ind) {
             0 -> return object: Tool {
                 override var title = toolsList[ind]
@@ -31,13 +31,13 @@ class PipelineActivity : BaseActivity() {
                 override var input  = ""
                 override var output = ""
 
-
-                override var service: Any = TextToSpeechService(context, Locale.FRENCH)
+                override var service: Any = TextToSpeechService(context, Locale.getDefault())
 
                 // override run method of Tool interface
                 override fun run(input: String, output: (String) -> Unit) {
                     (this.service as TextToSpeechService).input = input // send text to the service
                     (this.service as TextToSpeechService).run()
+                    output(input) // force output to be able to put things after this tool
                 }
 
                 override fun close() {
@@ -45,15 +45,15 @@ class PipelineActivity : BaseActivity() {
                 }
             }
             1 -> return object: Tool {
-                    override var title = toolsList[ind]
+                override var title = toolsList[ind]
 
-                    override var input  = ""
-                    override var output = ""
+                override var input  = ""
+                override var output = ""
 
 
-                    override var service: Any = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
+                override var service: Any = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
 
-                    // override run method of Tool interface
+                // override run method of Tool interface
                     override fun run(input: String, output: (String) -> Unit) {
                         (this.service as TranslatorService).run(this.input) { enText ->
                             Log.d("output: ", enText)
@@ -64,6 +64,29 @@ class PipelineActivity : BaseActivity() {
                     override fun close() {
                         Log.d(title, "close")
                     }
+            }
+            2 -> return object: Tool {
+                override var title = toolsList[ind]
+
+                override var input  = ""
+                override var output = ""
+
+                override var service: Any = SpeechToTextService(context, Locale.getDefault(), object: Listener {
+                    override fun onResult(text: String, final: Boolean) {
+                        Log.d("SpeechToTextActivity", "Final: $text")
+                        //output = text
+                    }
+                })
+
+                // override run method of Tool interface
+                override fun run(input: String, output: (String) -> Unit) {
+                    // just output the content said by the user
+                    output(this.output)
+                }
+
+                override fun close() {
+                    Log.d(title, "close")
+                }
             }
             else -> { // Note the block
                 Log.e("Error", "Not a valid service id")
@@ -102,51 +125,3 @@ class PipelineActivity : BaseActivity() {
         }
     }
 }
-
-
-
-/*
-
-        0 -> object: Tool {
-                override var title = toolsList[ind]
-
-                override var input  = ""
-                override var output = ""
-
-
-                override lateinit var service: Service
-
-                init {
-                    Log.d("test", ind.toString())
-                    when(ind) {
-                        0 -> {
-                            service = TextToSpeechService(context, Locale.FRENCH)
-                        }
-                        1 -> {
-                            service = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
-                        }
-                        else -> { // Note the block
-                            Log.e("Error", "Not a valid service id")
-                        }
-                    }
-                }
-
-                // override run method of Tool interface
-                override fun run(input: String, output: (String) -> Unit) {
-                    Log.d("RUNNN", "RUN")
-
-                    when(ind) {
-                        0 -> { // text to speech
-                            this.service.input = input // send text to the service
-                            (this.service as TextToSpeechService).run()
-                        }
-                        1 -> { // translate
-                            service.run(this.input) { enText ->
-                                Log.d("output: ", enText)
-                                output(enText)
-                            }
-                        }
-                        else -> { // Note the block
-                            Log.e("Error", "Not a valid service id")
-                        }
-                    }*/
