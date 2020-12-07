@@ -23,17 +23,23 @@ class PipelineActivity : BaseActivity() {
 
     private val toolsList = arrayOf("TTS", "Translator", "STT", "Text")
 
+    enum class TOOLS_TYPE(i: Int) {
+        TTS(0), TRANSLATOR(1), STT(2), TEXT(3)
+    }
+
     private fun getTool(ind: Int, context: Context): Tool {
-        when(ind) {
-            0 -> return object: Tool {
+        // get tool thanks to index in the menu
+        when(TOOLS_TYPE.values()[ind]) {
+            TOOLS_TYPE.TTS -> return object: Tool {
                 override var title = toolsList[ind]
 
                 override var input  = ""
                 override var output = ""
 
+                // init service
                 override var service: Any = TextToSpeechService(context, Locale.getDefault())
 
-                // override run method of Tool interface
+                // run service
                 override fun run(input: String, output: (String) -> Unit) {
                     (this.service as TextToSpeechService).input = input // send text to the service
                     (this.service as TextToSpeechService).run()
@@ -44,20 +50,20 @@ class PipelineActivity : BaseActivity() {
                     Log.d(title, "close")
                 }
             }
-            1 -> return object: Tool {
+            TOOLS_TYPE.TRANSLATOR -> return object: Tool {
                 override var title = toolsList[ind]
 
                 override var input  = ""
                 override var output = ""
 
-
+                // init service
                 override var service: Any = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
 
-                // override run method of Tool interface
+                // run service
                     override fun run(input: String, output: (String) -> Unit) {
                         (this.service as TranslatorService).run(this.input) { enText ->
                             Log.d("output: ", enText)
-                            output(enText)
+                            output(enText) // set output with translation
                         }
                     }
 
@@ -65,49 +71,47 @@ class PipelineActivity : BaseActivity() {
                         Log.d(title, "close")
                     }
             }
-            2 -> return object: Tool {
+            TOOLS_TYPE.STT -> return object: Tool {
                 override var title = toolsList[ind]
 
                 override var input  = ""
                 override var output = ""
 
+                // init service
                 override var service: Any = SpeechToTextService(context, Locale.getDefault(), object: Listener {
                     override fun onResult(text: String, final: Boolean) {
                         Log.d("SpeechToTextActivity", "Final: $text")
-                        //output = text
                     }
                 })
 
-                // override run method of Tool interface
+                // run service
                 override fun run(input: String, output: (String) -> Unit) {
-                    // just output the content said by the user
-                    output(this.output)
+                    output(this.output) // set output value
                 }
 
                 override fun close() {
                     Log.d(title, "close")
                 }
             }
-            3 -> return object: Tool {
+            TOOLS_TYPE.TEXT -> return object: Tool {
                 override var title = toolsList[ind]
 
                 override var input  = ""
                 override var output = ""
 
+                // init service
                 override var service: Any = TextService(context)
 
-                // override run method of Tool interface
+                // run service
                 override fun run(input: String, output: (String) -> Unit) {
-                    // just output the content said by the user
-                    output(this.input)
+                    output(this.input) // set output value
                 }
 
                 override fun close() {
                     Log.d(title, "close")
                 }
             }
-            else -> { // Note the block
-                Log.e("Error", "Not a valid service id")
+            else -> {
                 throw Error("Not a valid service id")
             }
         }
@@ -137,12 +141,13 @@ class PipelineActivity : BaseActivity() {
         }
 
 
-        // run button on click
+        // on click pipeline_play_button
         pipeline_play_button.setOnClickListener {
+            // if first block is a text, then we force insert input value in the execution loop (easy fix)
             if(toolChain[0].service is TextService) {
                 toolChain.display(0, toolChain[0].input)
             } else {
-                toolChain.display(0)
+                toolChain.display(0) // run pipeline without text tool has a first element
             }
         }
     }
