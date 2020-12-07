@@ -143,7 +143,7 @@ class PipelineActivity : BaseActivity() {
             if(toolChain[0].service is TextService) {
                 toolChain.display(0, toolChain[0].input)
             } else {
-                toolChain.display(0, "bonjour le monde") // run pipeline without text tool has a first element
+                toolChain.display(0) // run pipeline without text tool has a first element
             }
         }
     }
