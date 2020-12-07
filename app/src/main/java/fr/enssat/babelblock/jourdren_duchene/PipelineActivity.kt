@@ -43,6 +43,7 @@ class PipelineActivity : BaseActivity() {
                 }
 
                 override fun close() {
+                    (this.service as TextToSpeechService).close()
                     Log.d(title, "close")
                 }
             }
@@ -64,6 +65,7 @@ class PipelineActivity : BaseActivity() {
                     }
 
                     override fun close() {
+                        (this.service as TranslatorPipelineService).close()
                         Log.d(title, "close")
                     }
             }
@@ -76,7 +78,7 @@ class PipelineActivity : BaseActivity() {
                 // init service
                 override var service: Any = SpeechToTextService(context, Locale.getDefault(), object: Listener {
                     override fun onResult(text: String, final: Boolean) {
-                        Log.d("SpeechToTextActivity", "Final: $text")
+                        Log.d(title, "Final: $text")
                     }
                 })
 
@@ -86,6 +88,7 @@ class PipelineActivity : BaseActivity() {
                 }
 
                 override fun close() {
+                    (this.service as SpeechToTextService).close()
                     Log.d(title, "close")
                 }
             }
@@ -104,6 +107,7 @@ class PipelineActivity : BaseActivity() {
                 }
 
                 override fun close() {
+                    (this.service as TextService).close()
                     Log.d(title, "close")
                 }
             }
