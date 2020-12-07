@@ -98,7 +98,7 @@ class TranslatorPipelineService: Service {
 
     }
 
-    private suspend fun manageTranslate(text: String): CompletableDeferred<String> {
+    private fun manageTranslate(text: String): CompletableDeferred<String> {
         // Function used to manage the translated string used with Deferred item and coroutine
         val deferred = CompletableDeferred<String>()
         this.translator.translate(text)
