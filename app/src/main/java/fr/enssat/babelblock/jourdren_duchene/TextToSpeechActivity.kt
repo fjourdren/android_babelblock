@@ -5,8 +5,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
-import kotlinx.android.synthetic.main.activity_text_to_speech.*
-import kotlinx.android.synthetic.main.activity_text_to_speech.edit_query
+import kotlinx.android.synthetic.main.activity_tts.*
 import java.util.*
 
 
@@ -22,7 +21,7 @@ class TextToSpeechActivity : BaseActivity(), AdapterView.OnItemSelectedListener 
         super.onCreate(savedInstanceState)
 
         // set activity's layout
-        setContentView(R.layout.activity_text_to_speech)
+        setContentView(R.layout.activity_tts)
 
 
 

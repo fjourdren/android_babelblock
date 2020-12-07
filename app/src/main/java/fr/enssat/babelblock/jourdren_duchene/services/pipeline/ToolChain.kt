@@ -1,18 +1,17 @@
 package fr.enssat.babelblock.jourdren_duchene.services.pipeline
 
 interface Tool {
+    var title: String
+    var input: String
+    var output: String
+
+    var service: Any
+
     fun run(input: String, callback: (String) -> Unit)
     fun close()
 }
 
-interface ToolDisplay {
-    val tool: Tool
-    val title: String
-    var input: String
-    var output: String
-}
-
-class ToolChain(list: List<ToolDisplay> = emptyList()) {
+class ToolChain(list: List<Tool> = emptyList()) {
 
     private val list = list.toMutableList()
     val size
@@ -25,13 +24,13 @@ class ToolChain(list: List<ToolDisplay> = emptyList()) {
         onChangeListener = callback
     }
 
-    fun add(tool: ToolDisplay) {
+    fun add(tool: Tool) {
         list.add(tool)
         onChangeListener?.invoke()
     }
 
     // add at a specific location
-    fun addAt(index: Int, tool: ToolDisplay) {
+    fun addAt(index: Int, tool: Tool) {
         list.add(index, tool)
         onChangeListener?.invoke()
     }
@@ -52,13 +51,13 @@ class ToolChain(list: List<ToolDisplay> = emptyList()) {
     // display each input/output of this chain starting at the given position with an initial empty input
     fun display(position: Int, input: String = "") {
         //recursive loop
-        fun loop(value: String, chain: List<ToolDisplay>) {
+        fun loop(value: String, chain: List<Tool>) {
             // if not null do the let statement test end of recursion
             chain.firstOrNull()?.let {
                 it.input = value
                 onChangeListener?.invoke()
 
-                it.tool.run(value) { output ->
+                it.run(value) { output ->
                     it.output = output
                     onChangeListener?.invoke()
 
