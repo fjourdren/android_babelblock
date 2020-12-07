@@ -11,8 +11,8 @@ import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainAdapter
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainMoveSwipeHelper
 import fr.enssat.babelblock.jourdren_duchene.services.stt.Listener
 import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
-import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
+import fr.enssat.babelblock.jourdren_duchene.services.pipeline.TranslatorPipelineService
 import kotlinx.android.synthetic.main.activity_pipeline.*
 import java.lang.Error
 import java.util.*
@@ -57,7 +57,7 @@ class PipelineActivity : BaseActivity() {
                 override var output = ""
 
                 // init service
-                override var service: Any = TranslatorService(context, Locale.FRENCH, Locale.ENGLISH)
+                override var service: Any = TranslatorPipelineService(context, Locale.FRENCH, Locale.ENGLISH)
 
                 // run service
                     override fun run(input: String, output: (String) -> Unit) {

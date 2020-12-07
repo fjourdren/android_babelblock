@@ -16,8 +16,12 @@ import fr.enssat.babelblock.jourdren_duchene.services.pipeline.holders.TextHolde
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.holders.TranslateHolder
 import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
 import fr.enssat.babelblock.jourdren_duchene.services.text.TextService
-import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
+import fr.enssat.babelblock.jourdren_duchene.services.translation.Language
+import fr.enssat.babelblock.jourdren_duchene.services.pipeline.TranslatorPipelineService
+import kotlinx.android.synthetic.main.activity_translator.*
+import kotlinx.android.synthetic.main.block_translate.view.*
+import java.util.*
 
 class ToolChainAdapter: Adapter<ViewHolder>, ItemMoveAdapter {
 
