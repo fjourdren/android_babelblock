@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
+import fr.enssat.babelblock.jourdren_duchene.services.text.TextService
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.Tool
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChain
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChainAdapter
@@ -13,7 +14,6 @@ import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
 import fr.enssat.babelblock.jourdren_duchene.services.translation.TranslatorService
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
 import kotlinx.android.synthetic.main.activity_pipeline.*
-import kotlinx.android.synthetic.main.block_translate.view.*
 import java.lang.Error
 import java.util.*
 
@@ -21,7 +21,7 @@ import java.util.*
 // inherit BaseActivity to manage menuInflater
 class PipelineActivity : BaseActivity() {
 
-    private val toolsList = arrayOf("TTS", "Translator", "STT")
+    private val toolsList = arrayOf("TTS", "Translator", "STT", "Text")
 
     private fun getTool(ind: Int, context: Context): Tool {
         when(ind) {
@@ -88,6 +88,24 @@ class PipelineActivity : BaseActivity() {
                     Log.d(title, "close")
                 }
             }
+            3 -> return object: Tool {
+                override var title = toolsList[ind]
+
+                override var input  = ""
+                override var output = ""
+
+                override var service: Any = TextService(context)
+
+                // override run method of Tool interface
+                override fun run(input: String, output: (String) -> Unit) {
+                    // just output the content said by the user
+                    output(this.input)
+                }
+
+                override fun close() {
+                    Log.d(title, "close")
+                }
+            }
             else -> { // Note the block
                 Log.e("Error", "Not a valid service id")
                 throw Error("Not a valid service id")
@@ -121,7 +139,11 @@ class PipelineActivity : BaseActivity() {
 
         // run button on click
         pipeline_play_button.setOnClickListener {
-            toolChain.display(0, "Bonjour le monde")
+            if(toolChain[0].service is TextService) {
+                toolChain.display(0, toolChain[0].input)
+            } else {
+                toolChain.display(0)
+            }
         }
     }
 }
