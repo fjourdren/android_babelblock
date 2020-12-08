@@ -61,12 +61,15 @@ class ToolChain(list: List<Tool> = emptyList()) {
                     it.output = output
                     onChangeListener?.invoke()
 
+                    // if it's last element of the chain, we process callback
+                    if(chain.size <= 1) {
+                        callbackUI.invoke()
+                    }
+
                     //loop on the remaining chain
                     loop(output, chain.drop(1))
                 }
             }
-
-            callbackUI.invoke()
         }
 
         // start recursion
