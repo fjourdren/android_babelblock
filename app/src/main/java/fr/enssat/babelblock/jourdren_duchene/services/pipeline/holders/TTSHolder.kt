@@ -85,7 +85,7 @@ class TTSHolder(val view: View): RecyclerView.ViewHolder(view) {
         view.tool_tts_language_spinner.adapter = adapter
 
         // set default language_spinner value
-        view.tool_tts_language_spinner.setSelection(adapter.getPosition(Locale.getDefault().displayLanguage))
+        view.tool_tts_language_spinner.setSelection(adapter.getPosition(this.service.locale.displayLanguage))
 
 
 

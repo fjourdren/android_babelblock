@@ -13,9 +13,6 @@ class TextToSpeechService: Service {
 
     var serviceReady = false
 
-    var localesLanguagesUI = mutableListOf<String>()
-    var localesLanguagesObjects = mutableListOf<Locale>()
-
     constructor(context: Context, locale: Locale, callback: () -> Unit = {}): super(context) {
         // init locale
         this.locale = locale
