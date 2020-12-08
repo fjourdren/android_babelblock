@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.enssat.babelblock.jourdren_duchene.R
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.Tool
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.ToolChain
+import fr.enssat.babelblock.jourdren_duchene.services.pipeline.TranslatorPipelineService
 import fr.enssat.babelblock.jourdren_duchene.services.stt.Listener
 import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
 import fr.enssat.babelblock.jourdren_duchene.services.translation.Language
@@ -23,14 +24,7 @@ class STTHolder(val view: View): RecyclerView.ViewHolder(view) {
     lateinit var tool: Tool
 
     // init service
-    var service: SpeechToTextService = SpeechToTextService(view.context, Locale.getDefault(), object: Listener {
-        override fun onResult(text: String, final: Boolean) {
-            Log.d("BlockSpeechToText", "Final: $text")
-            tool.output = text
-            itemView.output_value.text = tool.output
-            itemView.output_value.setTextColor(view.context.resources.getColor(R.color.default_in_out))
-        }
-    })
+    lateinit var service: SpeechToTextService
 
 
     fun bind(toolChain: ToolChain, i: Int) {
@@ -40,6 +34,20 @@ class STTHolder(val view: View): RecyclerView.ViewHolder(view) {
 
         // change UI tool title
         itemView.tool_title.text = tool.title
+
+        // prepare service
+        this.service = tool.service as SpeechToTextService
+
+        // register listener
+        this.service.listener =  object: Listener {
+            override fun onResult(text: String, final: Boolean) {
+                Log.d("BlockSpeechToText", "Final: $text")
+                tool.output = text
+                itemView.output_value.text = tool.output
+                itemView.output_value.setTextColor(view.context.resources.getColor(R.color.default_in_out))
+            }
+        }
+        this.service.buildSpeechRecognizer()
 
         // change input & output UI
         itemView.input_value.text = tool.input
@@ -87,20 +95,11 @@ class STTHolder(val view: View): RecyclerView.ViewHolder(view) {
 
 
 
-        /** Spinners init **/
+        /** Spinners listeners **/
         // from spinner on item selected listener
         view.tool_stt_language_spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 service.locale = localesLanguagesObjects[position]
-                tool.output = tool.input
-
-                if(tool.output == null || tool.output == "") { // We show "nothing." in red if the string is null or == ""
-                    itemView.output_value.text = "Nothing."
-                    itemView.output_value.setTextColor(view.context.resources.getColor(R.color.red))
-                } else {
-                    itemView.output_value.text = tool.output
-                    itemView.output_value.setTextColor(view.context.resources.getColor(R.color.default_in_out))
-                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
