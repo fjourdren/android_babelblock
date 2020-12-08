@@ -106,7 +106,6 @@ class TranslatorPipelineService: Service {
                 callback.invoke(enText)
             }
         }
-
     }
 
 

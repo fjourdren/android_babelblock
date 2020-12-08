@@ -101,17 +101,14 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
     private fun downloadTranslationModel() {
         translate_button.isEnabled = false;
-        translate_button.isEnabled = false;
 
         info_message.text = "Downloading translation model... Please wait."
         translated_text.text = "" // force reseting output value when we change value
 
         this.translatorPipelineService.downloadModelIfNeeded({
             translate_button.isEnabled = true;
-            translate_button.isEnabled = true;
             info_message.text = "State: Ready."
         }, {
-            translate_button.isEnabled = false;
             translate_button.isEnabled = false;
             info_message.text = "Error: Model download failed, retrying..."
         }, {
