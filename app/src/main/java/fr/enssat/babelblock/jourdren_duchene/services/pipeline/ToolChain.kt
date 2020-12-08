@@ -13,9 +13,9 @@ interface Tool {
 
 class ToolChain(list: List<Tool> = emptyList()) {
 
-    private val list = list.toMutableList()
+    val itemslist = list.toMutableList()
     val size
-        get() = list.size
+        get() = itemslist.size
 
     private var onChangeListener: (() -> Unit)? = null
 
@@ -25,27 +25,27 @@ class ToolChain(list: List<Tool> = emptyList()) {
     }
 
     fun add(tool: Tool) {
-        list.add(tool)
+        itemslist.add(tool)
         onChangeListener?.invoke()
     }
 
     // add at a specific location
     fun addAt(index: Int, tool: Tool) {
-        list.add(index, tool)
+        itemslist.add(index, tool)
         onChangeListener?.invoke()
     }
 
-    operator fun get(index: Int) = list.get(index)
+    operator fun get(index: Int) = itemslist.get(index)
 
     // remove and insert
     fun move(from: Int, to: Int) {
-        val dragged = list.removeAt(from)
-        list.add(to, dragged)
+        val dragged = itemslist.removeAt(from)
+        itemslist.add(to, dragged)
     }
 
     // delete tool
     fun remove(from: Int) {
-        list.removeAt(from)
+        itemslist.removeAt(from)
     }
 
     // display each input/output of this chain starting at the given position with an initial empty input
@@ -70,6 +70,6 @@ class ToolChain(list: List<Tool> = emptyList()) {
         }
 
         // start recursion
-        loop(input, list.drop(position))
+        loop(input, itemslist.drop(position))
     }
 }
