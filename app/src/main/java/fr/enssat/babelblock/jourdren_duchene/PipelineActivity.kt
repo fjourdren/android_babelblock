@@ -5,12 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import fr.enssat.babelblock.jourdren_duchene.services.pipeline.*
-import fr.enssat.babelblock.jourdren_duchene.services.text.TextService
 import fr.enssat.babelblock.jourdren_duchene.services.stt.Listener
 import fr.enssat.babelblock.jourdren_duchene.services.stt.SpeechToTextService
+import fr.enssat.babelblock.jourdren_duchene.services.text.TextService
 import fr.enssat.babelblock.jourdren_duchene.services.tts.TextToSpeechService
 import kotlinx.android.synthetic.main.activity_pipeline.*
-import java.lang.Error
 import java.util.*
 
 
@@ -23,13 +22,15 @@ class PipelineActivity : BaseActivity() {
         TTS(0), TRANSLATOR(1), STT(2), TEXT(3)
     }
 
+    lateinit var toolChain: ToolChain
+
     private fun getTool(ind: Int, context: Context): Tool {
         // get tool thanks to index in the menu
         when(TOOLS_TYPE.values()[ind]) {
-            TOOLS_TYPE.TTS -> return object: Tool {
+            TOOLS_TYPE.TTS -> return object : Tool {
                 override var title = toolsList[ind]
 
-                override var input  = ""
+                override var input = ""
                 override var output = ""
 
                 // init service
@@ -47,36 +48,36 @@ class PipelineActivity : BaseActivity() {
                     Log.d(title, "close")
                 }
             }
-            TOOLS_TYPE.TRANSLATOR -> return object: Tool {
+            TOOLS_TYPE.TRANSLATOR -> return object : Tool {
                 override var title = toolsList[ind]
 
-                override var input  = ""
+                override var input = ""
                 override var output = ""
 
                 // init service
                 override var service: Any = TranslatorPipelineService(context, Locale.FRENCH, Locale.ENGLISH)
 
                 // run service
-                    override fun run(input: String, output: (String) -> Unit) {
-                        (this.service as TranslatorPipelineService).run(this.input) { enText ->
-                            Log.d("output: ", enText)
-                            output(enText) // set output with translation
-                        }
+                override fun run(input: String, output: (String) -> Unit) {
+                    (this.service as TranslatorPipelineService).run(this.input) { enText ->
+                        Log.d("output: ", enText)
+                        output(enText) // set output with translation
                     }
+                }
 
-                    override fun close() {
-                        (this.service as TranslatorPipelineService).close()
-                        Log.d(title, "close")
-                    }
+                override fun close() {
+                    (this.service as TranslatorPipelineService).close()
+                    Log.d(title, "close")
+                }
             }
-            TOOLS_TYPE.STT -> return object: Tool {
+            TOOLS_TYPE.STT -> return object : Tool {
                 override var title = toolsList[ind]
 
-                override var input  = ""
+                override var input = ""
                 override var output = ""
 
                 // init service
-                override var service: Any = SpeechToTextService(context, Locale.getDefault(), object: Listener {
+                override var service: Any = SpeechToTextService(context, Locale.getDefault(), object : Listener {
                     override fun onResult(text: String, final: Boolean) {}
                 })
 
@@ -90,10 +91,10 @@ class PipelineActivity : BaseActivity() {
                     Log.d(title, "close")
                 }
             }
-            TOOLS_TYPE.TEXT -> return object: Tool {
+            TOOLS_TYPE.TEXT -> return object : Tool {
                 override var title = toolsList[ind]
 
-                override var input  = ""
+                override var input = ""
                 override var output = ""
 
                 // init service
@@ -122,7 +123,7 @@ class PipelineActivity : BaseActivity() {
         setContentView(R.layout.activity_pipeline)
 
         // create toolchain and its adapter
-        val toolChain = ToolChain()
+        this.toolChain = ToolChain()
         val adapter = ToolChainAdapter(this, toolChain)
 
         // dedicated drag and drop mover helper
@@ -162,6 +163,15 @@ class PipelineActivity : BaseActivity() {
             } else {
                 callbackUI.invoke()
             }
+        }
+    }
+
+    // fix service memory leak
+    override fun onDestroy() {
+        super.onDestroy()
+
+        for(tool in toolChain.itemslist) {
+            tool.close()
         }
     }
 }
