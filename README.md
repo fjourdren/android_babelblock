@@ -8,8 +8,6 @@ ou sous la forme d'un pipeline personnalisable.
 
 ## Installation
 
-Installation avec l'APK ou :
-
 Cloner le répertoire git et importer dans Android Studio
 
 ```
