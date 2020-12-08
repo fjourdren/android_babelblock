@@ -1,15 +1,16 @@
 # BabelBlock - Projet Android ENSSAT
-
 BabelBlock est le nom de notre projet réalisé en IMR3 dans le cadre du module d'Android.
 
-BabelBlock permet d'utiliser les fonctionnalités de Text To Speech / Speech To Text / Traduction de manière indépendante
-ou sous la forme d'un pipeline personnalisable.
+BabelBlock permet d'utiliser les fonctionnalités de Text To Speech / Speech To Text / Traduction de manière indépendante ou sous la forme d'un pipeline personnalisable.
 
+## Développeurs
+Le projet a été développé par :
+
+* [Flavien JOURDREN](https://github.com/fjourdren)
+* [Jean-Baptiste DUCHÊNE](https://github.com/jbduchenee)
 
 ## Installation
-
 Cloner le répertoire git et importer dans Android Studio
-
 ```
 git clone https://github.com/fjourdren/private_android
 ```
@@ -24,26 +25,15 @@ En cas de problème pour build le projet il peut être nécéssaire de resynchro
 4. Après la synchronisation, coller à nouveau la ligne `include ':app'` et relancer une synchronisation
 
 ## Fonctionnalités
-
 ### Menu principal
-
+![Image menu principal](./imgs/home.jpg)
 ### Text To Speech
-
+![Image text to speech](./imgs/tts.jpg)
 ### Translate
-
+![Image translate](./imgs/translate.jpg)
 ### Speech To Text
-
-### Block
-
+![Image speech to text](./imgs/stt.jpg)
+### Bloc
+![Image blocs](./imgs/stt.jpg)
 ### Pipeline
-
-
-
-
-## Développeurs
-
-Le projet a été développé par :
-
-
-* [Flavien JOURDREN](https://github.com/fjourdren)
-* [Jean-Baptiste DUCHÊNE](https://github.com/jbduchenee)
+![Image pipeline de traduction](./imgs/pipeline.jpg)
