@@ -49,7 +49,7 @@ class ToolChain(list: List<Tool> = emptyList()) {
     }
 
     // display each input/output of this chain starting at the given position with an initial empty input
-    fun display(position: Int, input: String = "") {
+    fun display(position: Int, callbackUI: () -> Unit = {}, input: String = "") {
         //recursive loop
         fun loop(value: String, chain: List<Tool>) {
             // if not null do the let statement test end of recursion
@@ -65,6 +65,8 @@ class ToolChain(list: List<Tool> = emptyList()) {
                     loop(output, chain.drop(1))
                 }
             }
+
+            callbackUI.invoke()
         }
 
         // start recursion
