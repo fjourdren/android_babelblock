@@ -43,6 +43,7 @@ class PipelineActivity : BaseActivity() {
                 }
 
                 override fun close() {
+                    (this.service as TextToSpeechService).close()
                     Log.d(title, "close")
                 }
             }
@@ -64,6 +65,7 @@ class PipelineActivity : BaseActivity() {
                     }
 
                     override fun close() {
+                        (this.service as TranslatorPipelineService).close()
                         Log.d(title, "close")
                     }
             }
@@ -75,17 +77,16 @@ class PipelineActivity : BaseActivity() {
 
                 // init service
                 override var service: Any = SpeechToTextService(context, Locale.getDefault(), object: Listener {
-                    override fun onResult(text: String, final: Boolean) {
-                        Log.d("SpeechToTextActivity", "Final: $text")
-                    }
+                    override fun onResult(text: String, final: Boolean) {}
                 })
 
                 // run service
                 override fun run(input: String, output: (String) -> Unit) {
-                    output(this.output) // set output value
+                    output(this.output)
                 }
 
                 override fun close() {
+                    (this.service as SpeechToTextService).close()
                     Log.d(title, "close")
                 }
             }
@@ -104,6 +105,7 @@ class PipelineActivity : BaseActivity() {
                 }
 
                 override fun close() {
+                    (this.service as TextService).close()
                     Log.d(title, "close")
                 }
             }
@@ -139,11 +141,26 @@ class PipelineActivity : BaseActivity() {
 
         // on click pipeline_play_button
         pipeline_play_button.setOnClickListener {
-            // if first block is a text, then we force insert input value in the execution loop (easy fix)
-            if(toolChain[0].service is TextService) {
-                toolChain.display(0, toolChain[0].input)
+            pipeline_play_button.isEnabled = false
+            pipeline_play_button.setImageResource(android.R.drawable.ic_popup_sync)
+            pipeline_play_button.setColorFilter(getResources().getColor(R.color.red))
+
+            var callbackUI = {
+                pipeline_play_button.isEnabled = true
+                pipeline_play_button.setImageResource(android.R.drawable.ic_media_play)
+                pipeline_play_button.setColorFilter(getResources().getColor(android.R.color.holo_green_dark))
+            }
+
+            // check that pipeline isn't empty
+            if(toolChain.size > 0) {
+                // if first block is a text, then we force insert input value in the execution loop (easy fix)
+                if (toolChain[0].service is TextService) {
+                    toolChain.display(0, callbackUI, toolChain[0].input)
+                } else {
+                    toolChain.display(0, callbackUI) // run pipeline without text tool has a first element
+                }
             } else {
-                toolChain.display(0) // run pipeline without text tool has a first element
+                callbackUI.invoke()
             }
         }
     }
