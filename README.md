@@ -3,7 +3,7 @@
 BabelBlock est le nom de notre projet réalisé en IMR3 dans le cadre du module d'Android.
 
 BabelBlock permet d'utiliser les fonctionnalités de Text To Speech / Speech To Text / Traduction de manière indépendante
-ou sous la forme d'une pipeline personnalisable.
+ou sous la forme d'un pipeline personnalisable.
 
 
 ## Installation
@@ -25,7 +25,7 @@ En cas de problème pour build le projet il peut être nécéssaire de resynchro
 3. Cliquer sur le menu `File` et sélectionner `Sync Project with Gradle files.`
 4. Après la synchronisation, coller à nouveau la ligne `include ':app'` et relancer une synchronisation
 
-## Usage
+## Fonctionnalités
 
 ### Menu principal
 
