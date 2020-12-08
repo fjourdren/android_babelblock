@@ -79,35 +79,36 @@ class TranslatorPipelineService: Service {
                 }
     }
 
-    override fun run(text: String, callback: (String) -> Unit) {
-        // execute translation using coroutine
+    private suspend fun manageTranslate(text: String): CompletableDeferred<String> {
+        // Function used to manage the translated string used with Deferred item and coroutine
+        val deferred = CompletableDeferred<String>()
         this.downloadModelIfNeeded({
-            CoroutineScope(IO).launch {
-                val enText = manageTranslate(text).await()
-                // Change context in order to be able to edit what is displayed on the application
-                withContext(Main){
-                    super.output = enText
-                    callback.invoke(enText)
-                }
-            }
+            this.translator.translate(text)
+                    .addOnSuccessListener { resText -> deferred.complete(resText)}
+                    .addOnFailureListener { e ->
+                        deferred.completeExceptionally(e)
+                        Log.e("TranslatorService", "Translation failed", e) }
         }, {
             Log.d("Model Management", "Error: Model download failed, retrying...")
         }, {
             Log.d("Model Management", "Error: App can't download the translation model, please check your wifi connection or used languages...")
         })
-
-    }
-
-    private suspend fun manageTranslate(text: String): CompletableDeferred<String> {
-        // Function used to manage the translated string used with Deferred item and coroutine
-        val deferred = CompletableDeferred<String>()
-        this.translator.translate(text)
-                .addOnSuccessListener { resText -> deferred.complete(resText)}
-                .addOnFailureListener { e ->
-                    deferred.completeExceptionally(e)
-                    Log.e("TranslatorService", "Translation failed", e) }
         return deferred
     }
+
+    override fun run(text: String, callback: (String) -> Unit) {
+        // execute translation using coroutine{
+        CoroutineScope(IO).launch {
+            val enText = manageTranslate(text).await()
+            // Change context in order to be able to edit what is displayed on the application
+            withContext(Main){
+                super.output = enText
+                callback.invoke(enText)
+            }
+        }
+
+    }
+
 
     private fun deleteModel(languageToDelete: Locale) {
         // get model to delete

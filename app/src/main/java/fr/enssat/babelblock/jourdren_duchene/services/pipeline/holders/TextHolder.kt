@@ -49,6 +49,7 @@ class TextHolder(val view: View): RecyclerView.ViewHolder(view) {
         // on user change input value
         itemView.block_text_input_value.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                tool.input = s.toString()
                 if(tool.input == null || tool.input == "") { // We show "nothing." in red if the string is null or == ""
                     itemView.output_value.text = "Nothing."
                     itemView.output_value.setTextColor(view.context.resources.getColor(R.color.red))
