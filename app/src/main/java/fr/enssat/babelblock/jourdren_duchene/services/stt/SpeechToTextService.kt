@@ -15,19 +15,25 @@ class SpeechToTextService: Service {
     var locale: Locale
     var listener: Listener
 
-    private var speechRecognizer: SpeechRecognizer
+    private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var intent: Intent
 
     constructor(context: Context, locale: Locale, listener: Listener): super(context) {
         this.locale = locale
         this.listener = listener
+        super.context = context
 
         if(SpeechRecognizer.isRecognitionAvailable(context).not()) {
             Log.e("SpeechToTextService", "Sorry but Speech recognizer is not available on this device")
             throw IllegalStateException()
         }
 
-        this.speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context).apply {
+        buildSpeechRecognizer()
+        buildSTT()
+    }
+
+    fun buildSpeechRecognizer() {
+        this.speechRecognizer = SpeechRecognizer.createSpeechRecognizer(super.context).apply {
             setRecognitionListener(object: RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) { Log.d("SpeechToTextService", "ready $params") }
                 override fun onRmsChanged(rmsdB: Float) { }
@@ -60,18 +66,15 @@ class SpeechToTextService: Service {
                 override fun onEvent(eventType: Int, params: Bundle?) {}
             })
         }
-
-        buildSTT()
     }
 
     private fun buildSTT() {
-        val loc: Locale = this.locale
         this.intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
         }
 
-        Log.d("SpeechToTextService", "Change language to ${loc.displayLanguage}")
+        Log.d("SpeechToTextService", "Change language to ${this.locale.displayLanguage}")
     }
 
     fun run() {
