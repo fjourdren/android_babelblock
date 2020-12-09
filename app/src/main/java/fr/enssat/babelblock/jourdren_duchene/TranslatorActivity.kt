@@ -13,7 +13,7 @@ import java.util.*
 // inherit BaseActivity to manage menuInflater
 class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
-    lateinit var translatorPipelineService: TranslatorService
+    lateinit var translatorService: TranslatorService
 
     private var localesLanguagesUI = mutableListOf<String>()
     private var localesLanguagesObjects = mutableListOf<Locale>()
@@ -64,12 +64,12 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
         /* === SERVICES INIT === */
         // create translation service
-        this.translatorPipelineService = TranslatorService(this, Locale.FRENCH,  Locale.ENGLISH)
+        this.translatorService = TranslatorService(this, Locale.FRENCH,  Locale.ENGLISH)
 
 
         /* === BUTTON LISTENERS === */
         translate_button.setOnClickListener {
-            this.translatorPipelineService.run(edit_query.text.toString()) { enText ->
+            this.translatorService.run(edit_query.text.toString()) { enText ->
                 translated_text.text = enText
             }
         }
@@ -83,7 +83,7 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         when(parent.id) {
             R.id.from_language_spinner -> {
                 // set from language
-                this.translatorPipelineService.from_language = localesLanguagesObjects[pos]
+                this.translatorService.from_language = localesLanguagesObjects[pos]
 
                 // manage UI & download model
                 this.downloadTranslationModel()
@@ -91,7 +91,7 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
             R.id.to_language_spinner -> {
                 // set target language
-                this.translatorPipelineService.to_language = localesLanguagesObjects[pos]
+                this.translatorService.to_language = localesLanguagesObjects[pos]
 
                 // manage UI & download model
                 this.downloadTranslationModel()
@@ -105,7 +105,7 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         info_message.text = "Downloading translation model... Please wait."
         translated_text.text = "" // force reseting output value when we change value
 
-        this.translatorPipelineService.downloadModelIfNeeded({
+        this.translatorService.downloadModelIfNeeded({
             translate_button.isEnabled = true;
             info_message.text = "State: Ready."
         }, {
@@ -121,7 +121,7 @@ class TranslatorActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onDestroy() {
-        this.translatorPipelineService.close()
+        this.translatorService.close()
         super.onDestroy()
     }
 }
