@@ -34,6 +34,6 @@ En cas de problème pour build le projet il peut être nécéssaire de resynchro
 ### Speech To Text
 ![Image speech to text](./imgs/stt.jpg)
 ### Bloc
-![Image blocs](./imgs/stt.jpg)
+![Image blocs](./imgs/block.jpg)
 ### Pipeline
 ![Image pipeline de traduction](./imgs/pipeline.jpg)
